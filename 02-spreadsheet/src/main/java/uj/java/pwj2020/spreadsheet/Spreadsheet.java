@@ -36,7 +36,9 @@ public class Spreadsheet {
     private String getValue(String[][] input, String[][] result, int i, int j){
         if(result[i][j] == null){
             if(isReference(input[i][j])){
-
+                int firstIndex = getFirstIndexFromRef(input[i][j]);
+                result[firstIndex][j] = getValue(input,result,firstIndex,j);
+                return result[firstIndex][j];
             }else if(isFormula(input[i][j])){
 
             }else{
@@ -47,8 +49,22 @@ public class Spreadsheet {
         }
     }
 
+    private String getFirstValueFromFormula(String formula){
+        int from = formula.indexOf('(');
+        int to = formula.indexOf(',');
+        return formula.substring(from,to).trim();
+    }
 
+    private String getSecondValueFromFormula(String formula){
+        int from = formula.indexOf(',');
+        int to = formula.indexOf(')');
+        return formula.substring(from,to).trim();
+    }
 
+    private int getFirstIndexFromRef(String input){
+        char letter = input.charAt(1);
+        return letter - 'A';
+    }
 
     public boolean isFormula(String input){
         return input.charAt(0) == '=' ? true : false;
