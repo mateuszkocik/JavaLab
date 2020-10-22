@@ -22,29 +22,19 @@ public class Spreadsheet {
     }
 
 
-
-
-    public static void main(String[] args){
-        Spreadsheet s = new Spreadsheet();
-        String[][] input = {
-                {"1","2","3"},
-                {"4","5","6"},
-                {"$A1","$C1","$B3"},
-                {"=ADD(10,$A1)","=SUB($C3,$A1)","0"}};
-
-        System.out.println(s.calculate(input));
-
-
-    }
-
     public String[][] calculate(String[][] input) {
-        String[][] result = new String[4][];
-        result[0] = new String[3];
-        result[1] = new String[3];
-        result[2] = new String[3];
-        result[3] = new String[3];
-
+        String[][] result = new String[input.length][];
+        for(int i = 0; i < input.length; i++){
+            result[i] = new String[input[i].length];
+        }
         process(input,result);
+
+        /*for(int i = 0; i < input.length; i++){
+            for(int j = 0; j < input[i].length; j++){
+                System.out.print(result[i][j]+",");
+            }
+            System.out.println();
+        }*/
 
         return result;
     }
@@ -62,31 +52,33 @@ public class Spreadsheet {
             System.out.println(input[i][j]);
 
             if(isReference(input[i][j])){
-                int firstIndex = getFirstIndexFromRef(input[i][j]);
-                int secondIndex = getSecondIndexFromRef(input[i][j]);
-                result[i][j] = new String(getValue(input,result,firstIndex,secondIndex));
+                result[i][j] = getValueFromReference(input, result, i, j);
                 return result[i][j];
             }else if(isFormula(input[i][j])){
                 String formula = getFormula(input[i][j]);
                 String v1 = getFirstValueFromFormula(input[i][j]);
                 String v2 = getSecondValueFromFormula(input[i][j]);
-
-
+                if(isReference(v1)){
+                    v1 = getValueFromReference(input,result,v1);
+                }
+                if(isReference(v2)){
+                    v2 = getValueFromReference(input,result,v2);
+                }
                 switch (formula){
                     case "ADD":
-                        result[i][j] = new String(sum(v1,v2));
+                        result[i][j] = sum(v1,v2);
                         return result[i][j];
                     case "SUB":
-                        result[i][j] = new String(sub(v1,v2));
+                        result[i][j] = sub(v1,v2);
                         return result[i][j];
                     case "MUL":
-                        result[i][j] = new String(mul(v1,v2));
+                        result[i][j] = mul(v1,v2);
                         return result[i][j];
                     case "DIV":
-                        result[i][j] = new String(div(v1,v2));
+                        result[i][j] = div(v1,v2);
                         return result[i][j];
                     case "MOD":
-                        result[i][j] = new String(mod(v1,v2));
+                        result[i][j] = mod(v1,v2);
                         return result[i][j];
                     default: return result[i][j];
                 }
@@ -99,6 +91,19 @@ public class Spreadsheet {
         }
     }
 
+    private String getValueFromReference(String[][] input, String[][] result, String value) {
+        int firstIndex = getFirstIndexFromRef(value);
+        int secondIndex = getSecondIndexFromRef(value);
+
+        return getValue(input, result,firstIndex,secondIndex);
+    }
+
+
+    private String getValueFromReference(String[][] input, String[][] result, int i, int j) {
+        int firstIndex = getFirstIndexFromRef(input[i][j]);
+        int secondIndex = getSecondIndexFromRef(input[i][j]);
+        return getValue(input, result,firstIndex,secondIndex);
+    }
 
 
     private String sum(String v1, String v2){
@@ -160,12 +165,12 @@ public class Spreadsheet {
     }
 
     private int getFirstIndexFromRef(String input){
-        char letter = input.charAt(1);
-        return letter - 'A';
+        return Integer.parseInt(input.substring(2)) - 1;
     }
 
     private int getSecondIndexFromRef(String input) {
-        return Integer.parseInt(input.substring(2)) - 1;
+        char letter = input.charAt(1);
+        return letter - 'A';
     }
 
     public boolean isFormula(String input){
