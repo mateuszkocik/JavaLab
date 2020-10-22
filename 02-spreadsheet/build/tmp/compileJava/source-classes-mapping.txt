@@ -1,3 +1,4 @@
 uj/java/pwj2020/spreadsheet/Spreadsheet.java
  uj.java.pwj2020.spreadsheet.Spreadsheet
+ uj.java.pwj2020.spreadsheet.Spreadsheet$1
  uj.java.pwj2020.spreadsheet.Spreadsheet$Formula

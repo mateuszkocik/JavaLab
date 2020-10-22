@@ -1,143 +1,110 @@
 package uj.java.pwj2020.spreadsheet;
 
-
 public class Spreadsheet {
 
-    private enum Formula{
-        ADD("ADD"),
-        SUB("SUB"),
-        MUL("MUL"),
-        DIV("DIV"),
-        MOD("MOD");
-
-        private String name;
-
-        private Formula(String name){
-            this.name = name;
-        }
-
-        public String getName(){
-            return this.name;
-        }
-    }
-
+    private String[][] input;
+    private String[][] result;
 
     public String[][] calculate(String[][] input) {
-        String[][] result = new String[input.length][];
+        this.input = input;
+        initResultArray();
         for(int i = 0; i < input.length; i++){
-            result[i] = new String[input[i].length];
-        }
-        process(input,result);
-
-        /*for(int i = 0; i < input.length; i++){
             for(int j = 0; j < input[i].length; j++){
-                System.out.print(result[i][j]+",");
+                result[i][j] = getValue(i,j);
             }
-            System.out.println();
-        }*/
-
+        }
         return result;
     }
 
-    public void process(String[][] input, String[][] result){
+    public void initResultArray(){
+        result = new String[input.length][];
         for(int i = 0; i < input.length; i++){
-            for(int j = 0; j < input[i].length; j++){
-                result[i][j] = getValue(input, result,i,j);
-            }
+            result[i] = new String[input[i].length];
         }
     }
 
-    private String getValue(String[][] input, String[][] result, int i, int j){
-        if(result[i][j] == null){
-            System.out.println(input[i][j]);
+    private String getValue(int i, int j){
+        String value = result[i][j];
+        String inputStr = input[i][j];
 
-            if(isReference(input[i][j])){
-                result[i][j] = getValueFromReference(input, result, i, j);
-                return result[i][j];
-            }else if(isFormula(input[i][j])){
-                String formula = getFormula(input[i][j]);
-                String v1 = getFirstValueFromFormula(input[i][j]);
-                String v2 = getSecondValueFromFormula(input[i][j]);
-                if(isReference(v1)){
-                    v1 = getValueFromReference(input,result,v1);
-                }
-                if(isReference(v2)){
-                    v2 = getValueFromReference(input,result,v2);
-                }
-                switch (formula){
-                    case "ADD":
-                        result[i][j] = sum(v1,v2);
-                        return result[i][j];
-                    case "SUB":
-                        result[i][j] = sub(v1,v2);
-                        return result[i][j];
-                    case "MUL":
-                        result[i][j] = mul(v1,v2);
-                        return result[i][j];
-                    case "DIV":
-                        result[i][j] = div(v1,v2);
-                        return result[i][j];
-                    case "MOD":
-                        result[i][j] = mod(v1,v2);
-                        return result[i][j];
-                    default: return result[i][j];
-                }
+        if(value == null){
+            if(isReference(inputStr)){
+                value = getValueFromReference(inputStr);
+            }else if(isFormula(inputStr)){
+                value = getValueFromFormula(inputStr);
             }else{
-                result[i][j] = new String(input[i][j]);
-                return result[i][j];
+                value = inputStr;
             }
-        }else{
-            return result[i][j];
+        }
+        return value;
+    }
+
+    private String getValueFromFormula(String inputStr) {
+        String formula = getFormula(inputStr);
+        String v1 = getFirstValueFromFormula(inputStr);
+        String v2 = getSecondValueFromFormula(inputStr);
+
+        return calculateFormula(formula, v1, v2);
+    }
+
+    private String calculateFormula(String formula, String s1, String s2) {
+        Integer i1 = Integer.parseInt(s1);
+        Integer i2 = Integer.parseInt(s2);
+        switch (Formula.valueOf(formula)){
+            case ADD:
+                return sum(i1, i2);
+            case SUB:
+                return sub(i1, i2);
+            case MUL:
+                return mul(i1, i2);
+            case DIV:
+                return div(i1, i2);
+            case MOD:
+                return mod(i1, i2);
+            default:
+                return null;
         }
     }
 
-    private String getValueFromReference(String[][] input, String[][] result, String value) {
+    private String getSecondValueFromFormula(String inputStr) {
+        String v2 = getSecondArgFromFormula(inputStr);
+        if(isReference(v2)){
+            v2 = getValueFromReference(v2);
+        }
+        return v2;
+    }
+
+    private String getFirstValueFromFormula(String inputStr) {
+        String v1 = getFirstArgFromFormula(inputStr);
+        if(isReference(v1)){
+            v1 = getValueFromReference(v1);
+        }
+        return v1;
+    }
+
+    private String getValueFromReference(String value) {
         int firstIndex = getFirstIndexFromRef(value);
         int secondIndex = getSecondIndexFromRef(value);
-
-        return getValue(input, result,firstIndex,secondIndex);
+        return getValue(firstIndex,secondIndex);
     }
 
-
-    private String getValueFromReference(String[][] input, String[][] result, int i, int j) {
-        int firstIndex = getFirstIndexFromRef(input[i][j]);
-        int secondIndex = getSecondIndexFromRef(input[i][j]);
-        return getValue(input, result,firstIndex,secondIndex);
-    }
-
-
-    private String sum(String v1, String v2){
-        Integer i1 = Integer.parseInt(v1);
-        Integer i2 = Integer.parseInt(v2);
-
+    private String sum(Integer i1, Integer i2){
         return String.valueOf(i1+i2);
     }
 
-    private String sub(String v1, String v2){
-        Integer i1 = Integer.parseInt(v1);
-        Integer i2 = Integer.parseInt(v2);
-
+    private String sub(Integer i1, Integer i2){
         return String.valueOf(i1-i2);
     }
 
-    private String mul(String v1, String v2){
-        Integer i1 = Integer.parseInt(v1);
-        Integer i2 = Integer.parseInt(v2);
-
+    private String mul(Integer i1, Integer i2){
         return String.valueOf(i1*i2);
     }
 
-    private String div(String v1, String v2){
-        Integer i1 = Integer.parseInt(v1);
-        Integer i2 = Integer.parseInt(v2);
-
+    private String div(Integer i1, Integer i2){
         return String.valueOf(i1/i2);
     }
 
-    private String mod(String v1, String v2){
-        Integer i1 = Integer.parseInt(v1);
-        Integer i2 = Integer.parseInt(v2);
-
+    private String mod(Integer i1, Integer i2){
         return String.valueOf(i1%i2);
     }
 
@@ -148,16 +115,14 @@ public class Spreadsheet {
         return input.substring(from,to);
     }
 
-    private String getFirstValueFromFormula(String formula){
+    private String getFirstArgFromFormula(String formula){
         int from = formula.indexOf('(') + 1;
         int to = formula.indexOf(',');
-        System.out.println(formula + " from " + from + " to " + to);
-
 
         return formula.substring(from,to).trim();
     }
 
-    private String getSecondValueFromFormula(String formula){
+    private String getSecondArgFromFormula(String formula){
         int from = formula.indexOf(',') + 1;
         int to = formula.indexOf(')');
 
@@ -181,9 +146,22 @@ public class Spreadsheet {
         return input.charAt(0) == '$' ? true : false;
     }
 
-
     public boolean isNumber(String input){
         return isFormula(input) || isReference(input) ? false : true;
     }
 
+    public enum Formula{
+        ADD("ADD"),
+        SUB("SUB"),
+        MUL("MUL"),
+        DIV("DIV"),
+        MOD("MOD");
+
+        private String name;
+
+        private Formula(String name){
+            this.name = name;
+        }
+
+    }
 }
