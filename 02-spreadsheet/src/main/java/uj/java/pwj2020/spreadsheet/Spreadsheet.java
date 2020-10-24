@@ -146,10 +146,6 @@ public class Spreadsheet {
         return input.charAt(0) == '$' ? true : false;
     }
 
-    public boolean isNumber(String input){
-        return isFormula(input) || isReference(input) ? false : true;
-    }
-
     public enum Formula{
         ADD("ADD"),
         SUB("SUB"),
@@ -157,9 +153,9 @@ public class Spreadsheet {
         DIV("DIV"),
         MOD("MOD");
 
-        private String name;
+        private final String name;
 
-        private Formula(String name){
+        Formula(String name){
             this.name = name;
         }
 
