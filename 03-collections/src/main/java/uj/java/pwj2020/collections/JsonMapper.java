@@ -7,7 +7,7 @@ public interface JsonMapper {
     String toJson(Map<String, ?> map);
 
     static JsonMapper defaultInstance() {
-        return null;
+        return new JsonMapperImpl();
     }
 
 }
