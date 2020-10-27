@@ -10,11 +10,6 @@ public class JsonMapperImpl implements JsonMapper {
 
     @Override
     public String toJson(Map<String, ?> map) {
-        String a = m(map);
-        return a;
-    }
-
-    private String m(Map<String, ?> map) {
         if(map == null || map.size() == 0) return "{}";
 
         String result = "{";
@@ -28,6 +23,7 @@ public class JsonMapperImpl implements JsonMapper {
         }
 
         result = result.substring(0,result.length()-1);
+
         result += "}";
 
         return result;
