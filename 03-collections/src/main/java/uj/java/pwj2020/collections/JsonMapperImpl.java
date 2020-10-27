@@ -40,7 +40,7 @@ public class JsonMapperImpl implements JsonMapper {
 
             result += "]";
         }else if(value instanceof Map){
-            result += m((Map)value);
+            result += toJson((Map)value);
         }else if(value instanceof String){
             value = ((String)value).replace("\"", "\\\"");
             result += "\"" + value + "\"";

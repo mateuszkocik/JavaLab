@@ -8,4 +8,7 @@ public interface BattleshipGenerator {
         return new BattleshipGeneratorImpl();
     }
 
+
+
+
 }
