@@ -27,6 +27,19 @@ public class BattleshipGeneratorImpl implements BattleshipGenerator{
     public static void main(String[] args){
         BattleshipGeneratorImpl b= new BattleshipGeneratorImpl();
         b.generateMap();
+        for(int i = 0; i < 100; i++){
+            System.out.println(b.getRandomNumberFromLeftFields());
+            System.out.println(b.leftFields.size());
+        }
+    }
+
+    private int getRandomNumberFromLeftFields(){
+        int index = (int)(Math.random()*leftFields.size());
+        int number = leftFields.get(index);
+
+        leftFields.remove(index);
+
+        return number;
     }
 
 

@@ -1,8 +1,5 @@
 package uj.java.pwj2020.collections;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import java.util.Formatter;
 import java.util.List;
 import java.util.Map;
 
@@ -12,46 +9,50 @@ public class JsonMapperImpl implements JsonMapper {
     public String toJson(Map<String, ?> map) {
         if(map == null || map.size() == 0) return "{}";
 
-        String result = "{";
+        String jsonString = "{";
+        jsonString = getJsonFromMap(map, jsonString);
+        jsonString = jsonString.substring(0,jsonString.length()-1);
+        jsonString += "}";
 
-        for(Map.Entry<String,?> entry : map.entrySet()){
-            String key = entry.getKey();
-            var value = entry.getValue();
-            result += "\"" + key + "\": ";
-            result += getJsonFromObject(key,value);
-            result += ",";
-        }
-
-        result = result.substring(0,result.length()-1);
-
-        result += "}";
-
-        return result;
+        return jsonString;
     }
 
     private String getJsonFromObject(String key, Object value){
-        String result = "";
+        String jsonObject = "";
         if(value instanceof List){
-            result += "[" ;
-            for(Object o : (List)value){
-                result += getJsonFromObject(key,o) + ",";
-            }
-            if( ((List<?>) value).size() > 0) result = result.substring(0,result.length()-1);
-
-            result += "]";
+            jsonObject += "[" + getJsonFromList(key,value) + "]";
         }else if(value instanceof Map){
-            result += toJson((Map)value);
+            jsonObject += toJson((Map)value);
         }else if(value instanceof String){
-            value = ((String)value).replace("\"", "\\\"");
-            result += "\"" + value + "\"";
+            jsonObject += "\"" + ((String)value).replace("\"", "\\\"") + "\"";
         }else{
-            result += value.toString();
+            jsonObject += value.toString();
         }
 
-        return result;
+        return jsonObject;
     }
 
+    private String getJsonFromMap(Map<String, ?> map, String jsonString) {
+        for(Map.Entry<String,?> entry : map.entrySet()){
+            String key = entry.getKey();
+            var value = entry.getValue();
+            jsonString += "\"" + key + "\": ";
+            jsonString += getJsonFromObject(key,value);
+            jsonString += ",";
+        }
+        return jsonString;
+    }
 
-    
+    private String getJsonFromList(String key, Object value){
+        var list = (List)value;
+        String jsonFromList = "";
+
+        for(Object o : list){
+            jsonFromList += getJsonFromObject(key,o) + ",";
+        }
+        if(list.size() > 0) jsonFromList = jsonFromList.substring(0,jsonFromList.length()-1);
+
+        return jsonFromList;
+    }
 
 }
