@@ -10,13 +10,12 @@ public class BattleshipGeneratorImpl implements BattleshipGenerator{
     int doubleMast = 3;
     int tripleMast = 2;
     int quadrupleMast = 1;
-    char[][] map = new char[mapSize][mapSize];
-    List<Integer> leftFields = new ArrayList<Integer>();
+    List<Point> map = Point.makeListWithWaterPoints(mapSize);
+    List<Point> leftFields = List.copyOf(map);
+
 
     @Override
     public String generateMap() {
-        fillListWithNumbers(leftFields);
-
         while(thereAreLeftShips()){
             if(quadrupleMast > 0){
                 insertQuadrupleMast();
@@ -36,7 +35,6 @@ public class BattleshipGeneratorImpl implements BattleshipGenerator{
     }
 
     private void insertQuadrupleMast() {
-        int index = getRandomNumberFromLeftFields();
 
     }
 
@@ -46,43 +44,43 @@ public class BattleshipGeneratorImpl implements BattleshipGenerator{
 
     public static void main(String[] args){
         BattleshipGeneratorImpl b= new BattleshipGeneratorImpl();
+        b.makeShip(b.getPoint(9,9));
+        b.makeShip(b.getPoint(9,8));
+        b.makeShip(b.getPoint(9,7));
 
 
-        b.fillWithWater();
+
         /*b.map[5][5] = '#';
         b.map[5][4] = '#';
         b.map[4][4] = '#';*/
         /*b.map[5][5] = '#';
         b.map[4][5] = '#';
-        b.map[3][5] = '#';*/
+        b.map[3][5] = '#';
         b.map[9][9] = '#';
-        b.map[9][8] = '#';
+        b.map[9][8] = '#';*/
         b.displayMap();
-        System.out.println(b.getShipSizeIfChanged(9,7));
+        System.out.println(b.getShipSizeIfChanged(b.getPoint(9,6)));
 
     }
 
 
-    private int getShipSizeIfChanged(int x, int y){
-        /*
-        ZASTANOWIC SIE CZY NIE DOCHODZI DO SYTUACJI ZE ROZPATRUJEMY JUZ PUNKT KTORY JEST STATKIEM
-
-         */
-        makeShip(x,y);
-        int shipSize = getShipSize(x,y,-100,-100);
-        makeWater(x,y);
+    private int getShipSizeIfChanged(Point point){
+        makeShip(point);
+        int shipSize = getShipSize(point,null);
+        makeWater(point);
 
         return shipSize;
     }
 
-    private int getShipSize(int x, int y, int px, int py){
+    private int getShipSize(Point point, Point previousPoint){
+        if(point == null) return 0;
         int shipSize = 0;
-        if(isShip(x,y)){
+        if(isShip(point)){
             shipSize++;
-            if(!(x-1 == px && y == py)) shipSize += getShipSize(x-1,y,x,y);
-            if(!(x+1 == px && y == py)) shipSize += getShipSize(x+1,y,x,y);
-            if(!(x == px && y+1 == py)) shipSize += getShipSize(x,y+1,x,y);
-            if(!(x == px && y-1 == py)) shipSize += getShipSize(x,y-1,x,y);
+            if(getLeftPoint(point) != null && !getLeftPoint(point).equals(previousPoint)) shipSize += getShipSize(getLeftPoint(point),point);
+            if(getRightPoint(point) != null && !getRightPoint(point).equals(previousPoint)) shipSize += getShipSize(getRightPoint(point),point);
+            if(getTopPoint(point) != null && !getTopPoint(point).equals(previousPoint)) shipSize += getShipSize(getTopPoint(point),point);
+            if(getBottomPoint(point) != null && !getBottomPoint(point).equals(previousPoint)) shipSize += getShipSize(getBottomPoint(point),point);
         }
 
         return shipSize;
@@ -90,47 +88,56 @@ public class BattleshipGeneratorImpl implements BattleshipGenerator{
 
 
 
-    private boolean isShip(int x, int y){
-        if(x >= 0 && x < mapSize && y >= 0 && y < mapSize){
-            return map[x][y] == '#' ? true : false;
+    private boolean isShip(Point point){
+        if(point.x >= 0 && point.x < mapSize && point.y >= 0 && point.y < mapSize){
+            return point.sign == '#' ? true : false;
         }
         return false;
     }
 
-    private void makeShip(int x, int y){
-        map[x][y] = '#';
-    }
+    private void makeShip(Point p){p.sign = '#';}
 
-    private void makeWater(int x, int y){
-        map[x][y] = '.';
-    }
+    private void makeWater(Point p){p.sign='.';}
 
-    private int getRandomNumberFromLeftFields(){
+    private Point getRandomPointFromLeftFields(){
         int index = (int)(Math.random()*leftFields.size());
-        int number = leftFields.get(index);
+        Point point = leftFields.get(index);
 
-        return number;
+        return point;
+    }
+
+    private Point getLeftPoint(Point p){
+        return getPoint(p.x-1,p.y);
+    }
+
+    private Point getRightPoint(Point p){
+        return getPoint(p.x+1,p.y);
+    }
+
+    private Point getTopPoint(Point x){
+        return getPoint(x.x,x.y+1);
+    }
+
+    private Point getBottomPoint(Point x){
+        return getPoint(x.x,x.y-1);
     }
 
 
-    private void fillListWithNumbers(List<Integer> list){
-        for(int i = 0; i < Math.pow(mapSize,2); i++) list.add(i);
+    private Point getPoint(int x, int y){
+        if(x >= 0 && x < mapSize && y >= 0 && y < mapSize){
+            return map.get(x*mapSize+y);
+        }
+        return null;
     }
+
 
     private void displayMap(){
         for(int i = 0; i < mapSize; i++){
             for(int j = 0; j < mapSize; j++){
-                System.out.print(map[i][j]);
+                System.out.print(getPoint(i,j).sign);
             }
             System.out.println();
         }
     }
 
-    private void fillWithWater(){
-        for(int i = 0; i < mapSize; i++){
-            for(int j = 0; j < mapSize; j++){
-                map[i][j] = '.';
-            }
-        }
-    }
 }
