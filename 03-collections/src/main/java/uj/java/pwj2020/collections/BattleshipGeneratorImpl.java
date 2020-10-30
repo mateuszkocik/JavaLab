@@ -16,28 +16,98 @@ public class BattleshipGeneratorImpl implements BattleshipGenerator{
     @Override
     public String generateMap() {
         fillListWithNumbers(leftFields);
-        for(int i =0; i < leftFields.size(); i++){
-            System.out.print(leftFields.get(i) + ",");
+
+        while(thereAreLeftShips()){
+            if(quadrupleMast > 0){
+                insertQuadrupleMast();
+            }else if(tripleMast > 0){
+
+            }else if(doubleMast > 0){
+
+            }else{
+
+            }
+
         }
+
 
         return "a";
 
     }
 
+    private void insertQuadrupleMast() {
+        int index = getRandomNumberFromLeftFields();
+
+    }
+
+    private boolean thereAreLeftShips(){
+        return singleMast == 0 && doubleMast == 0 && tripleMast == 0 && quadrupleMast == 0 ? false : true;
+    }
+
     public static void main(String[] args){
         BattleshipGeneratorImpl b= new BattleshipGeneratorImpl();
-        b.generateMap();
-        for(int i = 0; i < 100; i++){
-            System.out.println(b.getRandomNumberFromLeftFields());
-            System.out.println(b.leftFields.size());
+
+
+        b.fillWithWater();
+        /*b.map[5][5] = '#';
+        b.map[5][4] = '#';
+        b.map[4][4] = '#';*/
+        /*b.map[5][5] = '#';
+        b.map[4][5] = '#';
+        b.map[3][5] = '#';*/
+        b.map[9][9] = '#';
+        b.map[9][8] = '#';
+        b.displayMap();
+        System.out.println(b.getShipSizeIfChanged(9,7));
+
+    }
+
+
+    private int getShipSizeIfChanged(int x, int y){
+        /*
+        ZASTANOWIC SIE CZY NIE DOCHODZI DO SYTUACJI ZE ROZPATRUJEMY JUZ PUNKT KTORY JEST STATKIEM
+
+         */
+        makeShip(x,y);
+        int shipSize = getShipSize(x,y,-100,-100);
+        makeWater(x,y);
+
+        return shipSize;
+    }
+
+    private int getShipSize(int x, int y, int px, int py){
+        int shipSize = 0;
+        if(isShip(x,y)){
+            shipSize++;
+            if(!(x-1 == px && y == py)) shipSize += getShipSize(x-1,y,x,y);
+            if(!(x+1 == px && y == py)) shipSize += getShipSize(x+1,y,x,y);
+            if(!(x == px && y+1 == py)) shipSize += getShipSize(x,y+1,x,y);
+            if(!(x == px && y-1 == py)) shipSize += getShipSize(x,y-1,x,y);
         }
+
+        return shipSize;
+    }
+
+
+
+    private boolean isShip(int x, int y){
+        if(x >= 0 && x < mapSize && y >= 0 && y < mapSize){
+            return map[x][y] == '#' ? true : false;
+        }
+        return false;
+    }
+
+    private void makeShip(int x, int y){
+        map[x][y] = '#';
+    }
+
+    private void makeWater(int x, int y){
+        map[x][y] = '.';
     }
 
     private int getRandomNumberFromLeftFields(){
         int index = (int)(Math.random()*leftFields.size());
         int number = leftFields.get(index);
-
-        leftFields.remove(index);
 
         return number;
     }
