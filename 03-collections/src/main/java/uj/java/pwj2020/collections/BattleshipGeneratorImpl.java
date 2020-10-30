@@ -2,6 +2,7 @@ package uj.java.pwj2020.collections;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Stack;
 
 public class BattleshipGeneratorImpl implements BattleshipGenerator{
 
@@ -35,7 +36,61 @@ public class BattleshipGeneratorImpl implements BattleshipGenerator{
     }
 
     private void insertQuadrupleMast() {
+        List<Point> newShip = new ArrayList<>();
+        Point point = getRandomPointFromLeftFields();
+        if(getShipSizeIfChanged(point) == 1){
+            newShip.add(point);
+            if(checkIfCanBeInserted(newShip,4)){
 
+            }
+        }
+    }
+
+    private List<Point> checkIfCanBeInserted(Stack<Point> newShip, Stack<Point> usedPoints, Point newPoint, int expectedSize) {
+
+        if(leftFields.contains(newPoint) && getShipSizeIfChanged(newPoint) == expectedSize){
+            newShip.add(newPoint);
+            return newShip;
+        }else if(getShipSizeIfChanged(newPoint) < expectedSize){
+            if(usedPoints.size() == 4){
+                makeWater(newShip.pop());
+            }
+            usedPoints.push(getRandomNeighbour(newShip,usedPoints,newShip.peek(),expectedSize));
+        }else{
+
+        }
+
+
+    }
+
+    private Point getRandomNeighbour(Stack<Point> newShip,Stack<Point> usedPoints, Point point, int expectedSize) {
+        Point nextPoint = null;
+        Stack<Integer> numbers = fillStackWithValues(0,3);
+        while(!numbers.isEmpty()){
+            int number = numbers.pop();
+            switch (number){
+            case 0: nextPoint = getRightPoint(point); break;
+            case 1: nextPoint = getLeftPoint(point); break;
+            case 2: nextPoint = getTopPoint(point); break;
+            case 3: nextPoint = getBottomPoint(point); break;
+            }
+            if(leftFields.contains(nextPoint) && !newShip.contains(nextPoint) && !usedPoints.contains(nextPoint) && getShipSizeIfChanged(nextPoint) == newShip.size()+1){
+                return nextPoint;
+            }
+        }
+        return nextPoint;
+    }
+
+    private Stack fillStackWithValues(int from, int to){
+        var stack = new Stack<>();
+        int number = (int)(Math.random()*100)%4;
+        while(stack.size() < to-from+1){
+            if(!stack.contains(number)){
+                stack.push(number);
+            }
+        }
+        System.out.println("rozmiar stack:" + stack.size());
+        return stack;
     }
 
     private boolean thereAreLeftShips(){
@@ -49,15 +104,6 @@ public class BattleshipGeneratorImpl implements BattleshipGenerator{
         b.makeShip(b.getPoint(9,7));
 
 
-
-        /*b.map[5][5] = '#';
-        b.map[5][4] = '#';
-        b.map[4][4] = '#';*/
-        /*b.map[5][5] = '#';
-        b.map[4][5] = '#';
-        b.map[3][5] = '#';
-        b.map[9][9] = '#';
-        b.map[9][8] = '#';*/
         b.displayMap();
         System.out.println(b.getShipSizeIfChanged(b.getPoint(9,6)));
 
