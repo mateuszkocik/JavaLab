@@ -45,7 +45,7 @@ public class JsonMapperImpl implements JsonMapper {
 
     private String getJsonFromList(String key, Object value){
         var list = (List)value;
-        String jsonFromList = "";
+        String jsonFromList = "";//string builder
 
         for(Object o : list){
             jsonFromList += getJsonFromObject(key,o) + ",";

@@ -147,7 +147,7 @@ public class Spreadsheet {
     }
 
     public enum Formula{
-        ADD("ADD"),
+        ADD("ADD"),//usunac nazwy
         SUB("SUB"),
         MUL("MUL"),
         DIV("DIV"),
