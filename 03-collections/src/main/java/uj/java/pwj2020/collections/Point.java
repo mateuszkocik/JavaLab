@@ -23,8 +23,10 @@ final class Point {
         return y == point.y;
     }
 
-
-
+    @Override
+    public String toString() {
+        return "("+x+","+y+")";
+    }
 
     public static ArrayList<Point> makeListWithWaterPoints(int size){
         var list = new ArrayList<Point>();
