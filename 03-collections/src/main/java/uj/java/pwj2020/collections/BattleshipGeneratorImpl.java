@@ -26,6 +26,7 @@ public class BattleshipGeneratorImpl implements BattleshipGenerator{
     @Override
     public String generateMap(){
         initLeftFields();
+        System.out.println("Rozmiar: " + leftFields.size());
         while(thereAreLeftShips()){
             int nextShipSize;
             ArrayList<Point> list;
@@ -38,17 +39,22 @@ public class BattleshipGeneratorImpl implements BattleshipGenerator{
             }else{
                 nextShipSize = 1;
             }
+            System.out.println("Rozmiar kolejnego statku: " + nextShipSize);
             list = generateRandomXPoints(nextShipSize);
             if(list.size() == nextShipSize){
+
                 changeFromListToShips(list);
-                deleteFromLeftFields(list);
                 makeUnavailable(list);
                 if(list.size() == 1) singleMast--;
                 if(list.size() == 2) doubleMast--;
                 if(list.size() == 3) tripleMast--;
                 if(list.size() == 4) quadrupleMast--;
             }
+            displayMap();
+            System.out.println("Pozostale: " + leftFields.size() + leftFields);
         }
+
+
 
         return convertMapToString();
 
@@ -56,11 +62,14 @@ public class BattleshipGeneratorImpl implements BattleshipGenerator{
 
     private void makeUnavailable(ArrayList<Point> list){
         for(Point p: list){
+
             var neighbours = getNeighbours(p);
             var corners = getCornerPoints(p);
 
+            leftFields.removeAll(list);
             leftFields.removeAll(neighbours);
             leftFields.removeAll(corners);
+
         }
     }
 
@@ -74,10 +83,11 @@ public class BattleshipGeneratorImpl implements BattleshipGenerator{
         var randomPoints = new ArrayList<Point>();
 
 
-        Point firstPoint = getRandomPointFromLeftFields();
+        Point firstPoint = getRandomPointFromLeftFields(randomPoints);
         randomPoints.add(firstPoint);
         addNeighboursToAvailable(availablePoints,randomPoints,firstPoint);
         System.out.println("First point " + firstPoint);
+        System.out.println("Available points: " + availablePoints);
         for(int i = 1; i < x; i++){
             if(availablePoints.size() > 0){
                 Point p = getRandomPointFromList(availablePoints);
@@ -85,15 +95,12 @@ public class BattleshipGeneratorImpl implements BattleshipGenerator{
                 randomPoints.add(p);
                 availablePoints.remove(p);
                 addNeighboursToAvailable(availablePoints,randomPoints,p);
+                System.out.println("Available points: " + availablePoints);
 
             }
         }
 
         return randomPoints;
-    }
-
-    private void deleteFromLeftFields(ArrayList<Point> list){
-        leftFields.removeAll(list);
     }
 
     private void changeFromListToShips(List<Point> list){
@@ -109,7 +116,7 @@ public class BattleshipGeneratorImpl implements BattleshipGenerator{
     private void addNeighboursToAvailable(List<Point> availablePoints, List<Point> randomPoints, Point point){
         List<Point> temp = getNeighbours(point);
         for(Point p : temp){
-            if(!availablePoints.contains(p) && !randomPoints.contains(p)) availablePoints.add(p);
+            if(!availablePoints.contains(p) && !randomPoints.contains(p) && leftFields.contains(p)) availablePoints.add(p);
         }
     }
 
@@ -133,24 +140,14 @@ public class BattleshipGeneratorImpl implements BattleshipGenerator{
         return list;
     }
 
-    private boolean isShip(Point point){
-        if(point.x >= 0 && point.x < mapSize && point.y >= 0 && point.y < mapSize){
-            return point.sign == shipChar;
+    private Point getRandomPointFromLeftFields(ArrayList<Point> randomPoints){
+        Point p = null;
+        while(p == null){
+            int index = (int)(Math.random()*leftFields.size());
+            if(!(randomPoints.contains(leftFields.get(index)))) p = leftFields.get(index);
         }
-        return false;
-    }
 
-    private void makeShip(Point p){
-        p.sign = shipChar;
-    }
-
-    private void makeWater(Point p){
-        p.sign= waterChar;
-    }
-
-    private Point getRandomPointFromLeftFields(){
-        int index = (int)(Math.random()*leftFields.size());
-        return leftFields.get(index);
+        return p;
     }
 
     private Point getLeftPoint(Point p){
