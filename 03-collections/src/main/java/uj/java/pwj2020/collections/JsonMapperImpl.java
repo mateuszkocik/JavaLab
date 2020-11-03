@@ -3,56 +3,65 @@ package uj.java.pwj2020.collections;
 import java.util.List;
 import java.util.Map;
 
-public class JsonMapperImpl implements JsonMapper {
+public class JsonMapperImpl implements JsonMapper{
 
     @Override
-    public String toJson(Map<String, ?> map) {
+    public String toJson(Map<String, ?> map){
         if(map == null || map.size() == 0) return "{}";
 
-        String jsonString = "{";
-        jsonString = getJsonFromMap(map, jsonString);
-        jsonString = jsonString.substring(0,jsonString.length()-1);
-        jsonString += "}";
+        StringBuilder jsonString = new StringBuilder("{");
+        jsonString.append(getJsonFromMap(map));
+        jsonString.deleteCharAt(jsonString.length() - 1);
+        jsonString.append("}");
 
-        return jsonString;
+        return jsonString.toString();
     }
 
     private String getJsonFromObject(String key, Object value){
-        String jsonObject = "";
+        StringBuilder jsonObject = new StringBuilder("");
         if(value instanceof List){
-            jsonObject += "[" + getJsonFromList(key,value) + "]";
+            jsonObject.append("[");
+            jsonObject.append(getJsonFromList(key, value));
+            jsonObject.append("]");
         }else if(value instanceof Map){
-            jsonObject += toJson((Map)value);
+            jsonObject.append(toJson((Map<String, ?>) value));
         }else if(value instanceof String){
-            jsonObject += "\"" + ((String)value).replace("\"", "\\\"") + "\"";
+            jsonObject.append("\"");
+            jsonObject.append(((String) value).replace("\"", "\\\""));
+            jsonObject.append("\"");
         }else{
-            jsonObject += value.toString();
+            jsonObject.append(value);
         }
 
-        return jsonObject;
+        return jsonObject.toString();
     }
 
-    private String getJsonFromMap(Map<String, ?> map, String jsonString) {
-        for(Map.Entry<String,?> entry : map.entrySet()){
+    private String getJsonFromMap(Map<String, ?> map){
+        StringBuilder jsonString = new StringBuilder();
+        for(Map.Entry<String, ?> entry : map.entrySet()){
             String key = entry.getKey();
             var value = entry.getValue();
-            jsonString += "\"" + key + "\": ";
-            jsonString += getJsonFromObject(key,value);
-            jsonString += ",";
+            jsonString.append('\"');
+            jsonString.append(key);
+            jsonString.append("\": ");
+            jsonString.append(getJsonFromObject(key, value));
+            jsonString.append(',');
         }
-        return jsonString;
+
+        return jsonString.toString();
     }
 
     private String getJsonFromList(String key, Object value){
-        var list = (List)value;
-        String jsonFromList = "";//string builder
+        var list = (List) value;
+        StringBuilder jsonFromList = new StringBuilder();
 
         for(Object o : list){
-            jsonFromList += getJsonFromObject(key,o) + ",";
+            jsonFromList.append(getJsonFromObject(key, o));
+            jsonFromList.append(",");
         }
-        if(list.size() > 0) jsonFromList = jsonFromList.substring(0,jsonFromList.length()-1);
+        if(list.size() > 0) jsonFromList.deleteCharAt(jsonFromList.length() - 1);
 
-        return jsonFromList;
+        return jsonFromList.toString();
     }
 
 }
