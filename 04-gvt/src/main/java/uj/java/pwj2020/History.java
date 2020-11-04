@@ -10,7 +10,7 @@ public class History{
 
     public static void showLastN(int n) throws IOException{
         int latestVersion = Version.getLatestVersion();
-        int i = (latestVersion - n) < 0 ? 0 : latestVersion - n;
+        int i = (latestVersion - n) < 0 ? 0 : latestVersion - n + 1;
         for(; i <= latestVersion; i++){
             System.out.println(i + ": " + Version.showVersionMessage(i).get(0));
         }

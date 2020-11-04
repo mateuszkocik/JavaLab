@@ -9,7 +9,7 @@ if [[ $? -ne 30 ]]; then
     exit 1
 fi
 
-cmp -s message.out ../src/test/acceptance/expected09-01.out
+cmp -s message.out ../expected09-01.out
 if [[ $? -ne 0 ]]; then
     cd -
     echo "fail - invalid message after empty detach."
@@ -24,7 +24,7 @@ if [[ $? -ne 0 ]]; then
     exit 3
 fi
 
-cmp -s message.out ../src/test/acceptance/expected09-02.out
+cmp -s message.out ../expected09-02.out
 if [[ $? -ne 0 ]]; then
     cd -
     echo "fail - invalid messages after non-added file detach."
@@ -38,7 +38,7 @@ if [[ $? -ne 0 ]]; then
     echo "fail - invalid exit code after added file detach: " $0
     exit 5
 fi
-cmp -s message.out ../src/test/acceptance/expected09-03.out
+cmp -s message.out ../expected09-03.out
 if [[ $? -ne 0 ]]; then
     cd -
     echo "fail - invalid messages after added file detach."
@@ -56,7 +56,7 @@ fi
 
 java -jar /home/mateusz/IdeaProjects/JavaLab/JavaLab/04-gvt/build/libs/04-gvt-1.0.jar version > message.out
 
-cmp -s message.out ../src/test/acceptance/commit4-expected.out
+cmp -s message.out ../commit4-expected.out
 if [[ $? -ne 0 ]]; then
     cd -
     echo "fail - invalid version result."

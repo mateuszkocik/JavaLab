@@ -9,7 +9,7 @@ if [[ $? -ne 0 ]]; then
     exit 1
 fi
 
-cmp -s message.out ../src/test/acceptance/expected10.out
+cmp -s message.out ../expected10.out
 if [[ $? -ne 0 ]]; then
     cd -
     echo "fail - invalid history content."

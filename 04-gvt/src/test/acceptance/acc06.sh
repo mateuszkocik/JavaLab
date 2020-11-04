@@ -11,7 +11,7 @@ if [[ $? -ne 0 ]]; then
     exit 1
 fi
 
-cmp -s message.out ../src/test/acceptance/expected06.out
+cmp -s message.out ../expected06.out
 if [[ $? -ne 0 ]]; then
     cd -
     echo "fail - invalid messages after adding."

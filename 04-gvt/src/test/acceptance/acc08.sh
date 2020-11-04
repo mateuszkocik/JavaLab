@@ -9,7 +9,7 @@ if [[ $? -ne 0 ]]; then
     exit 1
 fi
 
-cmp -s b.txt ../src/test/acceptance/expected-b-v2.txt
+cmp -s b.txt ../expected-b-v2.txt
 if [[ $? -ne 0 ]]; then
     cd -
     echo "fail - invalid b.txt content after checkout of version 2."
@@ -31,7 +31,7 @@ if [[ $? -ne 0 ]]; then
     exit 4
 fi
 
-cmp -s b.txt ../src/test/acceptance/expected-b-v3.txt
+cmp -s b.txt ../expected-b-v3.txt
 if [[ $? -ne 0 ]]; then
     cd -
     echo "fail - invalid b.txt content after checkout of version 3."

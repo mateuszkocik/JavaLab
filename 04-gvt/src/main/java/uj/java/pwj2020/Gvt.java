@@ -20,10 +20,10 @@ public class Gvt {
                     Init.init();
                 }else if(command.equals("add")){
                     checkIfInitialized();
-                    checkIfFileIsSpecified(args);
+                    checkIfFileIsSpecified(args,20);
                     Add.add(args[1]);
                     var versionMessage = new ArrayList<String>();
-                    versionMessage.add("Added file: "+args[1]+".\n");
+                    versionMessage.add("Added file: " + args[1]);
                     if(args.length == 4){
                         versionMessage.add(args[3].substring(1,args[3].length()-1));
                     }
@@ -31,6 +31,9 @@ public class Gvt {
 
 
                 }else if(command.equals("detach")){
+                    checkIfInitialized();
+                    checkIfFileIsSpecified(args,30);
+
 
                 }else if(command.equals("checkout")){
 
@@ -84,10 +87,10 @@ public class Gvt {
         }
     }
 
-    private static void checkIfFileIsSpecified(String[] args){
+    private static void checkIfFileIsSpecified(String[] args, int errorCode){
         if(args.length == 1){
             System.out.println("Please specify file to add.");
-            System.exit(20);
+            System.exit(errorCode);
         }
     }
 

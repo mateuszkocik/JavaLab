@@ -18,7 +18,7 @@ if [[ $? -ne 0 ]]; then
     exit 2
 fi
 
-cmp -s message.out ../src/test/acceptance/expected07.out
+cmp -s message.out ../expected07.out
 if [[ $? -ne 0 ]]; then
     cd -
     echo "fail - invalid messages after commit."
@@ -41,7 +41,7 @@ if [[ $? -ne 0 ]]; then
     exit 5
 fi
 
-cmp -s message.out ../src/test/acceptance/commit3-expected.out
+cmp -s message.out ../commit3-expected.out
 if [[ $? -ne 0 ]]; then
     cd -
     echo "fail - invalid version result."

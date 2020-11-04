@@ -11,8 +11,8 @@ import java.util.Arrays;
 public class Add{
 
     public static void add(String fileName) throws IOException{
-        String sha1 = Sha1File.generateSha1FromFile(fileName);
         if(Files.exists(Paths.get(fileName))){
+            String sha1 = Sha1File.generateSha1FromFile(fileName);
             if(checkIfFileIsInHead(fileName,sha1)){
                 System.out.println("File " + fileName + " already added.");
                 System.exit(1);
@@ -22,7 +22,7 @@ public class Add{
             else addFileToHead(fileName, sha1);
 
             addFileToObjects(fileName,sha1);
-            System.out.println("File "+fileName+" added successfully.");
+            System.out.println("File " + fileName + " added successfully.");
 
         }else{
             System.out.println("File " + fileName + " not found.");
@@ -33,11 +33,11 @@ public class Add{
     private static void addFileToObjects(String fileName, String sha1)throws IOException{
         String newFilePath = Gvt.objectsPath + sha1;
         if(Files.notExists(Paths.get(newFilePath))){
-            var fw = new FileWriter(newFilePath);
-            var fr = new FileReader(fileName);
-            int c;
-            while((c = fr.read()) != -1){
-                fw.write(c);
+            BufferedReader fr = new BufferedReader(new FileReader(fileName));
+            BufferedWriter fw = new BufferedWriter(new FileWriter(newFilePath));
+            String line;
+            while((line = fr.readLine()) != null){
+                fw.write(line);
             }
         }
     }
