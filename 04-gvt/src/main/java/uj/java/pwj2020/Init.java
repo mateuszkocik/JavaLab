@@ -4,17 +4,19 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
 
 public class Init{
     public static void init() throws IOException{
         Path gvtDir = Paths.get(".gvt");
         if(Files.notExists(gvtDir)){
             Files.createDirectory(gvtDir);
-            makeFileInGVT("versions");
             makeFileInGVT("head");
+            makeFileInGVT("version");
+            makeDirectoryInGVT("versions");
             makeDirectoryInGVT("objects");
 
-            Version.addVersion(0,"GVT initialized.");
+            Version.addVersion(Arrays.asList("GVT initialized."));
             System.out.println("Current directory initialized successfully.");
         }else{
             System.out.println("Current directory is already initialized.");

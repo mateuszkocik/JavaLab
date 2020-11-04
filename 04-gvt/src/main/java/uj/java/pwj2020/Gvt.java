@@ -1,19 +1,16 @@
 package uj.java.pwj2020;
 
 import java.io.*;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
-import java.security.DigestInputStream;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.util.Arrays;
+import java.util.ArrayList;
 
 public class Gvt {
     public static final String objectsPath = ".gvt/objects/";
     public static final String headPath = ".gvt/head";
+    public static final String versionsPath = ".gvt/versions/";
+    public static final String versionPath = ".gvt/version";
 
     public static void main(String... args) {
         if(args.length > 0){
@@ -24,7 +21,14 @@ public class Gvt {
                 }else if(command.equals("add")){
                     checkIfInitialized();
                     checkIfFileIsSpecified(args);
-                    Add.add(args[2]);
+                    Add.add(args[1]);
+                    var versionMessage = new ArrayList<String>();
+                    versionMessage.add("Added file: "+args[1]+".\n");
+                    if(args.length == 4){
+                        versionMessage.add(args[3].substring(1,args[3].length()-1));
+                    }
+                    Version.addVersion(versionMessage);
+
 
                 }else if(command.equals("detach")){
 
@@ -34,7 +38,28 @@ public class Gvt {
 
                 }else if(command.equals("history")){
 
+                    if(args.length == 3){
+                        if(args[1].equals("-last")){
+                            History.showLastN(Integer.parseInt(args[2]));
+                        }else{
+                            History.showAllVersions();
+                        }
+                    }else{
+                        History.showAllVersions();
+                    }
+
                 }else if(command.equals("version")){
+                    int version;
+                    if(args.length == 1) version = Version.getLatestVersion();
+                    else version = Integer.parseInt(args[1]);
+
+                    if(version >= 0 && version <= Version.getLatestVersion()){
+                        System.out.println("Version: " + version);
+                        for(String s: Version.showVersionMessage(version)) System.out.println(s);
+                    }else{
+                        System.out.println("Invalid version number: " + version+ ".");
+                        System.exit(60);
+                    }
 
                 }else{
                     System.out.println("Unknown command " + command);

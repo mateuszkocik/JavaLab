@@ -9,7 +9,7 @@ else
     exit 1
 fi
 
-if [[ $(java -jar ../build/libs/04-gvt-1.0.jar history -last 1) = "0: GVT initialized." ]]; then
+if [[ $(java -jar /home/mateusz/IdeaProjects/JavaLab/JavaLab/04-gvt/build/libs/04-gvt-1.0.jar history -last 1) = "0: GVT initialized." ]]; then
   echo "pass history -last 1"
 else
   cd -
