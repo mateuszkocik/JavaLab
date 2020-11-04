@@ -6,13 +6,13 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 
-public class Gvt {
+public class Gvt{
     public static final String objectsPath = ".gvt/objects/";
     public static final String headPath = ".gvt/head";
     public static final String versionsPath = ".gvt/versions/";
     public static final String versionPath = ".gvt/version";
 
-    public static void main(String... args) {
+    public static void main(String... args){
         if(args.length > 0){
             try{
                 String command = args[0];
@@ -20,25 +20,40 @@ public class Gvt {
                     Init.init();
                 }else if(command.equals("add")){
                     checkIfInitialized();
-                    checkIfFileIsSpecified(args,20);
+                    checkIfFileIsSpecified(args,"add", 20);
                     Add.add(args[1]);
                     var versionMessage = new ArrayList<String>();
                     versionMessage.add("Added file: " + args[1]);
                     if(args.length == 4){
-                        versionMessage.add(args[3].substring(1,args[3].length()-1));
+                        versionMessage.add(args[3].substring(1, args[3].length() - 1));
                     }
                     Version.addVersion(versionMessage);
 
 
                 }else if(command.equals("detach")){
                     checkIfInitialized();
-                    checkIfFileIsSpecified(args,30);
+                    checkIfFileIsSpecified(args,"detach", 30);
+                    Detach.detach(args[1]);
 
-
+                    var versionMessage = new ArrayList<String>();
+                    versionMessage.add("Detached file: " + args[1]);
+                    if(args.length == 4){
+                        versionMessage.add(args[3].substring(1, args[3].length() - 1));
+                    }
+                    Version.addVersion(versionMessage);
                 }else if(command.equals("checkout")){
 
                 }else if(command.equals("commit")){
+                    checkIfInitialized();
+                    checkIfFileIsSpecified(args,"commit", 50);
+                    Commit.commit(args[1]);
 
+                    var versionMessage = new ArrayList<String>();
+                    versionMessage.add("Committed file: " + args[1]);
+                    if(args.length == 4){
+                        versionMessage.add(args[3].substring(1, args[3].length() - 1));
+                    }
+                    Version.addVersion(versionMessage);
                 }else if(command.equals("history")){
 
                     if(args.length == 3){
@@ -58,9 +73,9 @@ public class Gvt {
 
                     if(version >= 0 && version <= Version.getLatestVersion()){
                         System.out.println("Version: " + version);
-                        for(String s: Version.showVersionMessage(version)) System.out.println(s);
+                        for(String s : Version.showVersionMessage(version)) System.out.println(s);
                     }else{
-                        System.out.println("Invalid version number: " + version+ ".");
+                        System.out.println("Invalid version number: " + version + ".");
                         System.exit(60);
                     }
 
@@ -78,7 +93,6 @@ public class Gvt {
         }
     }
 
-
     private static void checkIfInitialized(){
         Path gvtDir = Paths.get(".gvt");
         if(Files.notExists(gvtDir)){
@@ -87,9 +101,9 @@ public class Gvt {
         }
     }
 
-    private static void checkIfFileIsSpecified(String[] args, int errorCode){
+    private static void checkIfFileIsSpecified(String[] args, String command, int errorCode){
         if(args.length == 1){
-            System.out.println("Please specify file to add.");
+            System.out.println("Please specify file to " + command + ".");
             System.exit(errorCode);
         }
     }
