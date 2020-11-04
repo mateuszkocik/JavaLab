@@ -5,6 +5,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class Gvt{
     public static final String objectsPath = ".gvt/objects/";
@@ -25,7 +26,7 @@ public class Gvt{
                     var versionMessage = new ArrayList<String>();
                     versionMessage.add("Added file: " + args[1]);
                     if(args.length == 4){
-                        versionMessage.add(args[3].substring(1, args[3].length() - 1));
+                        versionMessage.add(args[3]);
                     }
                     Version.addVersion(versionMessage);
 
@@ -38,7 +39,7 @@ public class Gvt{
                     var versionMessage = new ArrayList<String>();
                     versionMessage.add("Detached file: " + args[1]);
                     if(args.length == 4){
-                        versionMessage.add(args[3].substring(1, args[3].length() - 1));
+                        versionMessage.add(args[3]);
                     }
                     Version.addVersion(versionMessage);
                 }else if(command.equals("checkout")){
@@ -51,7 +52,7 @@ public class Gvt{
                     var versionMessage = new ArrayList<String>();
                     versionMessage.add("Committed file: " + args[1]);
                     if(args.length == 4){
-                        versionMessage.add(args[3].substring(1, args[3].length() - 1));
+                        versionMessage.add(args[3]);
                     }
                     Version.addVersion(versionMessage);
                 }else if(command.equals("history")){
@@ -73,7 +74,11 @@ public class Gvt{
 
                     if(version >= 0 && version <= Version.getLatestVersion()){
                         System.out.println("Version: " + version);
-                        for(String s : Version.showVersionMessage(version)) System.out.println(s);
+                        var list = Version.showVersionMessage(version);
+                        int i = 0;
+                        for(; i < list.size()-1; i++) System.out.println(list.get(i));
+                        System.out.print(list.get(i));
+
                     }else{
                         System.out.println("Invalid version number: " + version + ".");
                         System.exit(60);

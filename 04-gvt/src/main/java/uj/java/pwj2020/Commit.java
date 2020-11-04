@@ -26,13 +26,16 @@ public class Commit{
 
     private static void addFileToObjects(String fileName, String sha1) throws IOException{
         String newFilePath = Gvt.objectsPath + sha1;
+
         if(Files.notExists(Paths.get(newFilePath))){
-            BufferedReader fr = new BufferedReader(new FileReader(fileName));
-            BufferedWriter fw = new BufferedWriter(new FileWriter(newFilePath));
-            String line;
-            while((line = fr.readLine()) != null){
-                fw.write(line);
+            FileInputStream fr = new FileInputStream(fileName);
+            FileOutputStream fw = new FileOutputStream(newFilePath);
+            int ch;
+            while((ch = fr.read()) != -1){
+                fw.write(ch);
             }
+            fr.close();
+            fw.close();
         }
     }
 }

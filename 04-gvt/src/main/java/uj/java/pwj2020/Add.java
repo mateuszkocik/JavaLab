@@ -10,6 +10,7 @@ public class Add{
         if(Files.exists(Paths.get(fileName))){
             if(!Head.checkIfFileNameIsInHead(fileName)){
                 Head.addFileNameToHead(fileName);
+                System.out.println("File " + fileName + " added successfully.");
             }else{
                 System.out.println("File " + fileName + " already added.");
             }

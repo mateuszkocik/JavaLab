@@ -1,9 +1,6 @@
 package uj.java.pwj2020;
 
-import java.io.BufferedReader;
-import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -36,7 +33,7 @@ public class Head{
 
     public static void addFileNameToHead(String fileName) throws IOException{
         Path file = Paths.get(Gvt.headPath);
-        Files.write(file, Arrays.asList(fileName, "File is not committed"), StandardCharsets.UTF_8, StandardOpenOption.APPEND);
+        Files.write(file, Arrays.asList(fileName, fileName + " is not committed"), StandardCharsets.UTF_8, StandardOpenOption.APPEND);
     }
 
     /*public static void addFileToHead(String fileName, String sha1) throws IOException{
@@ -45,25 +42,24 @@ public class Head{
     }*/
 
     public static void replaceSha1InHead(String fileName, String sha1) throws IOException{
-        BufferedReader reader = new BufferedReader(new FileReader(fileName));
+        BufferedReader reader = new BufferedReader(new FileReader(Gvt.headPath));
         StringBuffer inputBuffer = new StringBuffer();
         String line;
-        String oldSha1 = "";
         while((line = reader.readLine()) != null){
-            if(line.equals(fileName)){
+            if(line.contains(fileName)){
                 inputBuffer.append(line);
                 inputBuffer.append('\n');
-                line = reader.readLine();
-                oldSha1 = line;
+                inputBuffer.append(sha1);
+                inputBuffer.append('\n');
+                reader.readLine();
+            }else{
+                inputBuffer.append(line);
+                inputBuffer.append('\n');
             }
-            inputBuffer.append(line);
-            inputBuffer.append('\n');
         }
         reader.close();
-
         String inputStr = inputBuffer.toString();
-        inputStr.replaceAll(oldSha1, sha1);
-        FileOutputStream fileOut = new FileOutputStream(fileName);
+        FileOutputStream fileOut = new FileOutputStream(Gvt.headPath);
         fileOut.write(inputStr.getBytes());
         fileOut.close();
     }
