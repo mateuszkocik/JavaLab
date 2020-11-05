@@ -5,7 +5,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 public class Gvt{
     public static final String objectsPath = ".gvt/objects/";
@@ -21,7 +20,7 @@ public class Gvt{
                     Init.init();
                 }else if(command.equals("add")){
                     checkIfInitialized();
-                    checkIfFileIsSpecified(args,"add", 20);
+                    checkIfFileIsSpecified(args, "add", 20);
                     Add.add(args[1]);
                     var versionMessage = new ArrayList<String>();
                     versionMessage.add("Added file: " + args[1]);
@@ -33,21 +32,26 @@ public class Gvt{
 
                 }else if(command.equals("detach")){
                     checkIfInitialized();
-                    checkIfFileIsSpecified(args,"detach", 30);
-                    Detach.detach(args[1]);
-
-                    var versionMessage = new ArrayList<String>();
-                    versionMessage.add("Detached file: " + args[1]);
-                    if(args.length == 4){
-                        versionMessage.add(args[3]);
+                    checkIfFileIsSpecified(args, "detach", 30);
+                    if(Head.checkIfFileNameIsInHead(args[1])){
+                        Detach.detach(args[1]);
+                        var versionMessage = new ArrayList<String>();
+                        versionMessage.add("Detached file: " + args[1]);
+                        if(args.length == 4){
+                            versionMessage.add(args[3]);
+                        }
+                        Version.addVersion(versionMessage);
+                    }else{
+                        System.out.println("File " + args[1] + " is not added to gvt.");
                     }
-                    Version.addVersion(versionMessage);
+
                 }else if(command.equals("checkout")){
                     //nie wiedzialem co robic jesli ktos poda wiecej niz 1 parametr
                     checkIfInitialized();
                     if(checkIfArgIsNumber(args) && Version.versionExist(args)){
                         int version = Integer.valueOf(args[1]);
                         Checkout.checkout(version);
+                        System.out.println("Version " + version + " checked out successfully.");
 
                     }else{
                         System.out.println("Invalid version number: " + args[1] + ".");
@@ -55,7 +59,7 @@ public class Gvt{
                     }
                 }else if(command.equals("commit")){
                     checkIfInitialized();
-                    checkIfFileIsSpecified(args,"commit", 50);
+                    checkIfFileIsSpecified(args, "commit", 50);
                     Commit.commit(args[1]);
 
                     var versionMessage = new ArrayList<String>();
@@ -85,7 +89,7 @@ public class Gvt{
                         System.out.println("Version: " + version);
                         var list = Version.showVersionMessage(version);
                         int i = 0;
-                        for(; i < list.size()-1; i++) System.out.println(list.get(i));
+                        for(; i < list.size() - 1; i++) System.out.println(list.get(i));
                         System.out.print(list.get(i));
 
                     }else{
@@ -106,7 +110,6 @@ public class Gvt{
             System.exit(1);
         }
     }
-
 
 
     private static boolean checkIfArgIsNumber(String[] args){

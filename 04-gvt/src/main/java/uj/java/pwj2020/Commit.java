@@ -11,7 +11,7 @@ public class Commit{
             if(Head.checkIfFileNameIsInHead(fileName)){
                 String sha1 = Sha1File.generateSha1FromFile(fileName);
                 Head.replaceSha1InHead(fileName, sha1);
-                addFileToObjects(fileName, sha1);
+                addFileToObjects(fileName);
                 System.out.println("File " + fileName + " committed successfully.");
             }else{
                 System.out.println("File " + fileName + " is not added to gvt.");
@@ -24,7 +24,8 @@ public class Commit{
         }
     }
 
-    private static void addFileToObjects(String fileName, String sha1) throws IOException{
+    public static void addFileToObjects(String fileName) throws IOException{
+        String sha1 = Sha1File.generateSha1FromFile(fileName);
         String newFilePath = Gvt.objectsPath + sha1;
 
         if(Files.notExists(Paths.get(newFilePath))){

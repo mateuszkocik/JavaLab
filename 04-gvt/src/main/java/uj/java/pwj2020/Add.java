@@ -9,7 +9,8 @@ public class Add{
     public static void add(String fileName) throws IOException{
         if(Files.exists(Paths.get(fileName))){
             if(!Head.checkIfFileNameIsInHead(fileName)){
-                Head.addFileNameToHead(fileName);
+                Head.addFileToHead(fileName);
+                Commit.addFileToObjects(fileName);
                 System.out.println("File " + fileName + " added successfully.");
             }else{
                 System.out.println("File " + fileName + " already added.");
