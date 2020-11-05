@@ -43,7 +43,16 @@ public class Gvt{
                     }
                     Version.addVersion(versionMessage);
                 }else if(command.equals("checkout")){
+                    //nie wiedzialem co robic jesli ktos poda wiecej niz 1 parametr
+                    checkIfInitialized();
+                    if(checkIfArgIsNumber(args) && Version.versionExist(args)){
+                        int version = Integer.valueOf(args[1]);
+                        Checkout.checkout(version);
 
+                    }else{
+                        System.out.println("Invalid version number: " + args[1] + ".");
+                        System.exit(40);
+                    }
                 }else if(command.equals("commit")){
                     checkIfInitialized();
                     checkIfFileIsSpecified(args,"commit", 50);
@@ -96,6 +105,19 @@ public class Gvt{
             System.out.println("Please specify command.");
             System.exit(1);
         }
+    }
+
+
+
+    private static boolean checkIfArgIsNumber(String[] args){
+        try{
+            Integer.parseInt(args[1]);
+        }catch(NumberFormatException e){
+            return false;
+        }catch(IndexOutOfBoundsException e){
+            return false;
+        }
+        return true;
     }
 
     private static void checkIfInitialized(){

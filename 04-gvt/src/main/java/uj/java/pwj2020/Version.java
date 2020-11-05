@@ -1,9 +1,6 @@
 package uj.java.pwj2020;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -18,6 +15,19 @@ public class Version{
         Path file = Paths.get(Gvt.versionsPath,String.valueOf(newVersion));
         Files.createFile(file);
         Files.write(file,message);
+        fillVersionHead(newVersion);
+
+    }
+
+    private static void fillVersionHead(int newVersion) throws IOException{
+        BufferedReader fr = new BufferedReader(new FileReader(Gvt.headPath));
+        FileOutputStream fw = new FileOutputStream(Gvt.versionsPath + String.valueOf(newVersion) + "_h");
+        int ch;
+        while((ch = fr.read()) != -1){
+            fw.write(ch);
+        }
+        fr.close();
+        fw.close();
     }
 
 
@@ -50,6 +60,15 @@ public class Version{
     public static void setVersion(int version) throws IOException{
         Path file = Paths.get(Gvt.versionPath);
         Files.write(file,Arrays.asList(String.valueOf(version)));
+    }
+
+    public static boolean versionExist(String[] args) throws IOException{
+        int version = Integer.valueOf(args[1]);
+        int latestVersion = getLatestVersion();
+        if(version >= 0 && version <= latestVersion){
+            return true;
+        }
+        return false;
     }
 
 
