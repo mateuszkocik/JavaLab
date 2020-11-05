@@ -4,7 +4,7 @@ import java.io.IOException;
 
 public class History{
 
-    public static void showAllVersions()throws IOException{
+    public static void showAllVersions() throws IOException{
         showLastN(Integer.MAX_VALUE);
     }
 

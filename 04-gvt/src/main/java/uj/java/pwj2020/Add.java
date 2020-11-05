@@ -10,7 +10,7 @@ public class Add{
         if(Files.exists(Paths.get(fileName))){
             if(!Head.checkIfFileNameIsInHead(fileName)){
                 Head.addFileToHead(fileName);
-                Commit.addFileToObjects(fileName);
+                addFileToObjects(fileName);
                 System.out.println("File " + fileName + " added successfully.");
             }else{
                 System.out.println("File " + fileName + " already added.");
@@ -19,28 +19,21 @@ public class Add{
             System.out.println("File " + fileName + " not found.");
             System.exit(21);
         }
-
-
-        /*if(Files.exists(Paths.get(fileName))){
-            String sha1 = Sha1File.generateSha1FromFile(fileName);
-            if(Head.checkIfFileIsInHead(fileName, sha1)){
-                System.out.println("File " + fileName + " already added.");
-                System.exit(1);
-            }
-
-            if(Head.checkIfFileNameIsInHead(fileName)) Head.replaceSha1InHead(fileName, sha1);
-            else Head.addFileToHead(fileName, sha1);
-
-            addFileToObjects(fileName, sha1);
-            System.out.println("File " + fileName + " added successfully.");
-
-        }else{
-            System.out.println("File " + fileName + " not found.");
-            System.exit(21);
-        }*/
     }
 
+    public static void addFileToObjects(String fileName) throws IOException{
+        String sha1 = Sha1File.generateSha1FromFile(fileName);
+        String newFilePath = Gvt.objectsPath + sha1;
 
-
-
+        if(Files.notExists(Paths.get(newFilePath))){
+            FileInputStream fr = new FileInputStream(fileName);
+            FileOutputStream fw = new FileOutputStream(newFilePath);
+            int ch;
+            while((ch = fr.read()) != -1){
+                fw.write(ch);
+            }
+            fr.close();
+            fw.close();
+        }
+    }
 }

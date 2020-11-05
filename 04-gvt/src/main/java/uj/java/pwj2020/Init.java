@@ -10,12 +10,7 @@ public class Init{
     public static void init() throws IOException{
         Path gvtDir = Paths.get(".gvt");
         if(Files.notExists(gvtDir)){
-            Files.createDirectory(gvtDir);
-            makeFileInGVT("head");
-            makeFileInGVT("version");
-            makeDirectoryInGVT("versions");
-            makeDirectoryInGVT("objects");
-
+            createGvtFiles(gvtDir);
             Version.addVersion(Arrays.asList("GVT initialized."));
             System.out.println("Current directory initialized successfully.");
         }else{
@@ -24,7 +19,15 @@ public class Init{
         }
     }
 
-    private static void makeFileInGVT(String file) throws  IOException{
+    private static void createGvtFiles(Path gvtDir) throws IOException{
+        Files.createDirectory(gvtDir);
+        makeFileInGVT("head");
+        makeFileInGVT("version");
+        makeDirectoryInGVT("versions");
+        makeDirectoryInGVT("objects");
+    }
+
+    private static void makeFileInGVT(String file) throws IOException{
         Path filePath = Paths.get(".gvt/" + file);
         Files.createFile(filePath);
     }

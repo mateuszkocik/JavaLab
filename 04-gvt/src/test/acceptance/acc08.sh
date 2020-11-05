@@ -2,21 +2,21 @@
 echo -n "[04-GVT][$0] starting... "
 cd my_repo
 
-java -jar /home/mateusz/IdeaProjects/JavaLab/JavaLab/04-gvt/build/libs/04-gvt-1.0.jar checkout 2
+java -jar ../build/libs/04-gvt-1.0.jar checkout 2
 if [[ $? -ne 0 ]]; then
     cd -
     echo "fail - invalid exit code: " $0
     exit 1
 fi
 
-cmp -s b.txt ../expected-b-v2.txt
+cmp -s b.txt ../src/test/acceptance/expected-b-v2.txt
 if [[ $? -ne 0 ]]; then
     cd -
     echo "fail - invalid b.txt content after checkout of version 2."
     exit 2
 fi
 
-java -jar /home/mateusz/IdeaProjects/JavaLab/JavaLab/04-gvt/build/libs/04-gvt-1.0.jar checkout 10
+java -jar ../build/libs/04-gvt-1.0.jar checkout 10
 
 if [[ $? -ne 40 ]]; then
     cd -
@@ -24,14 +24,14 @@ if [[ $? -ne 40 ]]; then
     exit 3
 fi
 
-java -jar /home/mateusz/IdeaProjects/JavaLab/JavaLab/04-gvt/build/libs/04-gvt-1.0.jar checkout 3
+java -jar ../build/libs/04-gvt-1.0.jar checkout 3
 if [[ $? -ne 0 ]]; then
     cd -
     echo "fail - invalid exit code: " $0
     exit 4
 fi
 
-cmp -s b.txt ../expected-b-v3.txt
+cmp -s b.txt ../src/test/acceptance/expected-b-v3.txt
 if [[ $? -ne 0 ]]; then
     cd -
     echo "fail - invalid b.txt content after checkout of version 3."

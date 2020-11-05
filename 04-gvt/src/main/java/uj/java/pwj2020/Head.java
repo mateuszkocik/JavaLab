@@ -19,22 +19,6 @@ public class Head{
         }
         return false;
     }
-    /*
-    public static boolean checkIfFileIsInHead(String fileName, String sha1) throws IOException{
-        BufferedReader reader = new BufferedReader(new FileReader(Gvt.headPath));
-        String nameFromHead;
-        while((nameFromHead = reader.readLine()) != null){
-            String sha1FromHead = reader.readLine();
-            if(fileName.equals(nameFromHead) && sha1.equals(sha1FromHead)) return true;
-        }
-
-        return false;
-    }*/
-
-    /*public static void addFileNameToHead(String fileName) throws IOException{
-        Path file = Paths.get(Gvt.headPath);
-        Files.write(file, Arrays.asList(fileName, fileName + " is not committed"), StandardCharsets.UTF_8, StandardOpenOption.APPEND);
-    }*/
 
     public static void addFileToHead(String fileName) throws IOException{
         String sha1 = Sha1File.generateSha1FromFile(fileName);

@@ -16,8 +16,7 @@ public class Sha1File{
             digest = MessageDigest.getInstance("SHA-1");
             DigestInputStream digestInputStream = new DigestInputStream(fileInputStream, digest);
             byte[] bytes = new byte[1024];
-            // read all file content
-            while (digestInputStream.read(bytes) > 0);
+            while(digestInputStream.read(bytes) > 0);
             resultByteArray = digest.digest();
         }catch(NoSuchAlgorithmException e){
             e.printStackTrace();
@@ -26,13 +25,11 @@ public class Sha1File{
         return bytesToHexString(resultByteArray);
     }
 
-    private static String bytesToHexString(byte[] bytes) {
+    private static String bytesToHexString(byte[] bytes){
         StringBuilder sb = new StringBuilder();
-        for (byte b : bytes) {
+        for(byte b : bytes){
             int value = b & 0xFF;
-            if (value < 16) {
-                // if value less than 16, then it's hex String will be only
-                // one character, so we need to append a character of '0'
+            if(value < 16){
                 sb.append("0");
             }
             sb.append(Integer.toHexString(value).toUpperCase());

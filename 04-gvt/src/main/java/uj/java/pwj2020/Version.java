@@ -12,11 +12,10 @@ public class Version{
 
     public static void addVersion(List<String> message) throws IOException{
         int newVersion = increaseVersion();
-        Path file = Paths.get(Gvt.versionsPath,String.valueOf(newVersion));
+        Path file = Paths.get(Gvt.versionsPath, String.valueOf(newVersion));
         Files.createFile(file);
-        Files.write(file,message);
+        Files.write(file, message);
         fillVersionHead(newVersion);
-
     }
 
     private static void fillVersionHead(int newVersion) throws IOException{
@@ -45,7 +44,7 @@ public class Version{
     public static int getLatestVersion() throws IOException{
         BufferedReader reader = new BufferedReader(new FileReader(Gvt.versionPath));
         String line;
-        if((line=reader.readLine()) == null) return -1;
+        if((line = reader.readLine()) == null) return -1;
 
         return Integer.valueOf(line);
     }
@@ -59,19 +58,16 @@ public class Version{
 
     public static void setVersion(int version) throws IOException{
         Path file = Paths.get(Gvt.versionPath);
-        Files.write(file,Arrays.asList(String.valueOf(version)));
+        Files.write(file, Arrays.asList(String.valueOf(version)));
     }
 
-    public static boolean versionExist(String[] args) throws IOException{
-        int version = Integer.valueOf(args[1]);
+    public static boolean versionExist(int version) throws IOException{
         int latestVersion = getLatestVersion();
         if(version >= 0 && version <= latestVersion){
             return true;
         }
         return false;
     }
-
-
 
 
 }
