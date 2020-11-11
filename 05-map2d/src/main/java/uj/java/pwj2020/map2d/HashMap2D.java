@@ -4,18 +4,44 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
-public class HashMap2D<R,C,V> implements Map2D<R,C,V>{
+public class HashMap2D<R, C, V> implements Map2D<R, C, V>{
 
-    private HashMap<HashMap<R,C>,V> map;
+    private HashMap<Key<R, C>, V> map;
+
+    public HashMap2D(){
+        this.map = new HashMap<>();
+    }
 
     @Override
     public V put(R rowKey, C columnKey, V value){
+        if(rowKey == null || columnKey == null){
+            throw new NullPointerException();
+        }
+        V previousVal = get(rowKey, columnKey);
+
+        Key key = getKey(rowKey,columnKey);
+        key = key == null ? new Key(rowKey,columnKey) : key;
+
+        map.put(key, value);
+
+        return previousVal;
+    }
+
+    private Key getKey(R rowKey, C columnKey){
+        if(rowKey == null || columnKey == null) return null;
+
+        var keySet = map.keySet();
+        for(Key k : keySet){
+            if(k.getRow() == rowKey && k.getColumn() == columnKey){
+                return k;
+            }
+        }
         return null;
     }
 
     @Override
     public V get(R rowKey, C columnKey){
-        return null;
+        return map.get(getKey(rowKey,columnKey));
     }
 
     @Override
