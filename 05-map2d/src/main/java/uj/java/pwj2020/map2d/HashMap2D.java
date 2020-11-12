@@ -6,7 +6,7 @@ import java.util.function.Function;
 
 public class HashMap2D<R, C, V> implements Map2D<R, C, V>{
 
-    private HashMap<Key<R, C>, V> map;
+    private HashMap<R,HashMap<C, V>> map;
 
     public HashMap2D(){
         this.map = new HashMap<>();
@@ -14,49 +14,33 @@ public class HashMap2D<R, C, V> implements Map2D<R, C, V>{
 
     @Override
     public V put(R rowKey, C columnKey, V value){
-        if(rowKey == null || columnKey == null){
-            throw new NullPointerException();
-        }
-        V previousVal = get(rowKey, columnKey);
+        if(rowKey == null || columnKey == null) throw new NullPointerException();
 
-        Key key = getKey(rowKey,columnKey);
-        key = key == null ? new Key(rowKey,columnKey) : key;
-
-        map.put(key, value);
+        V previousVal = get(rowKey,columnKey);
+        var colVar = map.computeIfAbsent(rowKey, k -> new HashMap<>());
+        colVar.put(columnKey,value);
 
         return previousVal;
     }
 
-    private Key getKey(R rowKey, C columnKey){
-        if(rowKey == null || columnKey == null) return null;
-
-        var keySet = map.keySet();
-        for(Key k : keySet){
-            if(k.getRow() == rowKey && k.getColumn() == columnKey){
-                return k;
-            }
-        }
-        return null;
-    }
-
     @Override
     public V get(R rowKey, C columnKey){
-        return map.get(getKey(rowKey,columnKey));
+        var colVar = map.get(rowKey);
+        return colVar == null ? null : colVar.get(columnKey);
     }
 
     @Override
-    public V remove(R rowKey, C columnKey){
-        return null;
+    public V remove(R rowKey, C columnKey){ return null;
     }
 
     @Override
     public boolean isEmpty(){
-        return false;
+        return map.isEmpty();
     }
 
     @Override
     public boolean nonEmpty(){
-        return false;
+        return !map.isEmpty();
     }
 
     @Override
@@ -66,12 +50,11 @@ public class HashMap2D<R, C, V> implements Map2D<R, C, V>{
 
     @Override
     public void clear(){
-
+        map.clear();
     }
 
     @Override
-    public Map<C, V> rowView(R rowKey){
-        return null;
+    public Map<C, V> rowView(R rowKey){ return null;
     }
 
     @Override
@@ -80,8 +63,7 @@ public class HashMap2D<R, C, V> implements Map2D<R, C, V>{
     }
 
     @Override
-    public boolean hasValue(V value){
-        return false;
+    public boolean hasValue(V value){ return true;
     }
 
     @Override
