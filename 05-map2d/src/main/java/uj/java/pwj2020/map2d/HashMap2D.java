@@ -30,12 +30,20 @@ public class HashMap2D<R, C, V> implements Map2D<R, C, V>{
     }
 
     @Override
-    public V remove(R rowKey, C columnKey){ return null;
+    public V remove(R rowKey, C columnKey){
+        var value = get(rowKey,columnKey);
+        var colVar = map.get(rowKey);
+        if(colVar != null && colVar.get(columnKey) != null) map.remove(colVar,value);
+
+        return value;
     }
 
     @Override
     public boolean isEmpty(){
-        return map.isEmpty();
+        for(R row : map.keySet()){
+            if(!map.get(row).isEmpty()) return false;
+        }
+        return true;
     }
 
     @Override
@@ -45,7 +53,11 @@ public class HashMap2D<R, C, V> implements Map2D<R, C, V>{
 
     @Override
     public int size(){
-        return 0;
+        int size = 0;
+        for(R row : map.keySet()){
+            size += map.get(row).size();
+        }
+        return size;
     }
 
     @Override
@@ -54,36 +66,52 @@ public class HashMap2D<R, C, V> implements Map2D<R, C, V>{
     }
 
     @Override
-    public Map<C, V> rowView(R rowKey){ return null;
+    public Map<C, V> rowView(R rowKey){
+        return Map.copyOf(map.get(rowKey));
     }
 
     @Override
     public Map<R, V> columnView(C columnKey){
-        return null;
+        var tempMap = new HashMap<R,V>();
+        for(R row : map.keySet()) if(map.get(row).keySet().contains(columnKey)) tempMap.put(row,map.get(row).get(columnKey));
+
+        return Map.copyOf(tempMap);
     }
 
     @Override
-    public boolean hasValue(V value){ return true;
+    public boolean hasValue(V value){
+        for(R row : map.keySet()){
+            if(map.get(row).containsValue(value)) return true;
+        }
+        return false;
     }
 
     @Override
     public boolean hasKey(R rowKey, C columnKey){
+        var keySet = map.keySet();
+        if(keySet.contains(rowKey)){
+            for(R row : keySet){
+                if(map.get(row).keySet().contains(columnKey)) return true;
+            }
+        }
         return false;
     }
 
     @Override
     public boolean hasRow(R rowKey){
-        return false;
+        return map.keySet().contains(rowKey);
     }
 
     @Override
     public boolean hasColumn(C columnKey){
+        for(R row : map.keySet()){
+            if(map.get(row).keySet().contains(columnKey)) return true;
+        }
         return false;
     }
 
     @Override
     public Map<R, Map<C, V>> rowMapView(){
-        return null;
     }
 
     @Override
