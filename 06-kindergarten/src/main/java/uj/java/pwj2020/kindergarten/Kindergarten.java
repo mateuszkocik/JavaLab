@@ -1,10 +1,9 @@
 package uj.java.pwj2020.kindergarten;
 
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.PrintStream;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Kindergarten {
@@ -12,10 +11,33 @@ public class Kindergarten {
     public static void main(String[] args) throws IOException {
         init();
 
-        final var fileName = args[0];
+        final var fileName = "3kids.in";
         System.out.println("File name: " + fileName);
-        //TODO: read children file, and keep children NOT hungry!
+        var childrenList = getChildrenFromFile(fileName);
     }
+
+    public static List<Child> getChildrenFromFile(String fileName){
+        var list = new ArrayList<Child>();
+        try{
+            BufferedReader br = new BufferedReader(new FileReader(fileName));
+            int childrenAmount = Integer.parseInt(br.readLine());//unnecessary however it is in file
+            String line;
+            while((line = br.readLine()) != null){
+                addChildToList(list, line);
+            }
+        }catch(IOException e){
+            e.printStackTrace();
+        }
+        return list;
+    }
+
+    private static void addChildToList(ArrayList<Child> list, String line){
+        String[] childDetails = line.split(" ");
+        String name = childDetails[0];
+        int hungerSpeedMs = Integer.parseInt(childDetails[1]);
+        list.add(new HungryChild(name,hungerSpeedMs));
+    }
+
 
     private static void init() throws IOException {
         Files.deleteIfExists(Path.of("out.txt"));
