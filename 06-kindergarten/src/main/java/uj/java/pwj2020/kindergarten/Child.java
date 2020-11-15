@@ -2,14 +2,14 @@ package uj.java.pwj2020.kindergarten;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
-public abstract class Child {
+public abstract class Child{
 
     private final Thread innerChild;
     private final String name;
     private final int hungerSpeedMs;
     private final AtomicInteger happiness = new AtomicInteger(100);
 
-    public Child(String name, int hungerSpeedMs) {
+    public Child(String name, int hungerSpeedMs){
         this.name = name;
         this.hungerSpeedMs = hungerSpeedMs;
         innerChild = new Thread(this::hungerLoop, "[InnerChild " + name + "]");
@@ -17,41 +17,41 @@ public abstract class Child {
         System.out.println("Child " + name + " came for dinner.");
     }
 
-    private void hungerLoop () {
-        while (true) {
-            try {
+    private void hungerLoop(){
+        while(true){
+            try{
                 Thread.sleep(hungerSpeedMs);
                 int currentLevel = happiness.decrementAndGet();
-                if (currentLevel <= 0) {
+                if(currentLevel <= 0){
                     System.err.println("Child " + name + " is crying!");
                 }
-            } catch (InterruptedException e) {
+            }catch(InterruptedException e){
                 Thread.currentThread().interrupt();
             }
         }
     }
 
-    protected final void eat() {
-        try {
+    protected final void eat(){
+        try{
             final String tName = Thread.currentThread().getName();
-            System.out.println("["+ tName + "] Child " + name + " is eating, happiness: " + happiness.get());
+            System.out.println("[" + tName + "] Child " + name + " is eating, happiness: " + happiness.get());
             Thread.sleep(100);
             happiness.set(100);
-            System.out.println("["+ tName + "] Child " + name + " finished eating.");
-        } catch (InterruptedException e) {
+            System.out.println("[" + tName + "] Child " + name + " finished eating.");
+        }catch(InterruptedException e){
             Thread.currentThread().interrupt();
         }
     }
 
-    public final int hungerSpeed() {
+    public final int hungerSpeed(){
         return hungerSpeedMs;
     }
 
-    public final int happiness() {
+    public final int happiness(){
         return happiness.get();
     }
 
-    public final String name() {
+    public final String name(){
         return name;
     }
 
