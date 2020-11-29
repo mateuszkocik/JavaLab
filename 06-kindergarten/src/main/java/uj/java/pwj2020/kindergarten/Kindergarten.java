@@ -9,7 +9,7 @@ public class Kindergarten{
 
     public static void main(String[] args) throws IOException{
         init();
-        final var fileName = "10kids.in";
+        final var fileName = args[0];
         System.out.println("File name: " + fileName);
 
         var children = getChildrenFromFile(fileName);
@@ -29,9 +29,6 @@ public class Kindergarten{
         for(int i = 0; i < childrenAmount; i++){
             children[i].rightFork = new Fork();
             children[i].leftFork = i != 0 ? children[i - 1].rightFork : null;
-            children[i].rightChild = children[(i + 1) % childrenAmount];
-            children[i].leftChild = children[(i - 1 + childrenAmount) % childrenAmount];
-
         }
         children[0].leftFork = children[childrenAmount - 1].rightFork;
     }
