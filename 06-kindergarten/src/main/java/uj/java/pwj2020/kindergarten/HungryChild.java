@@ -1,52 +1,57 @@
 package uj.java.pwj2020.kindergarten;
 
-public class HungryChild extends Child implements Runnable, Comparable<Child>{
+import static uj.java.pwj2020.kindergarten.Fork.State.*;
+
+public class HungryChild extends Child implements Runnable{
 
     public Fork leftFork;
     public Fork rightFork;
-    private Waiter waiter;
+    public int remainingTime;
+    public HungryChild leftChild;
+    public HungryChild rightChild;
 
     public HungryChild(String name, int hungerSpeedMs){
         super(name, hungerSpeedMs);
+        leftFork = null;
+        rightFork = null;
+        remainingTime = Integer.MAX_VALUE;
     }
 
-    @Override
-    public int compareTo(Child o){
-        return this.hungerSpeed() > o.hungerSpeed() ? 1 : -1;
-    }
 
-    synchronized public void cleanForks(){
-        leftFork.makeClean();
-        rightFork.makeClean();
-    }
 
-    synchronized void makeForksDirty(){
-        leftFork.makeDirty();
-        rightFork.makeDirty();
-    }
+
 
     @Override
     public void run(){
-        System.out.println("Child : " + name() + " run");
         while(true){
-            waiter.canIStartEating(this);
+            remainingTime = getRemainingTime();
+            if(happiness() < 70 && forksAreClean() && leftChild.remainingTime > remainingTime && rightChild.remainingTime > remainingTime){
+                eatAndCleanForks();
+            }
         }
-
     }
 
-    public void setWaiter(Waiter waiter){
-        this.waiter = waiter;
+    public void eatAndCleanForks(){
+        setStateInForks(DIRTY);
+        eat();
+        setStateInForks(CLEAN);
     }
 
-    public void setLeftFork(Fork leftFork){
-        this.leftFork = leftFork;
+    public void setStateInForks(Fork.State state){
+        leftFork.rwl.writeLock().lock();
+        rightFork.rwl.writeLock().lock();
+        leftFork.setState(state);
+        rightFork.setState(state);
+        leftFork.rwl.writeLock().unlock();
+        rightFork.rwl.writeLock().unlock();
     }
 
-    public void setRightFork(Fork rightFork){
-        this.rightFork = rightFork;
+    public boolean forksAreClean(){
+        return leftFork.getState() == CLEAN && rightFork.getState() == CLEAN;
     }
 
-    public Fork getRightFork(){
-        return rightFork;
+    public int getRemainingTime(){
+        return happiness()*hungerSpeed();
     }
+
 }
