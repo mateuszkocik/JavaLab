@@ -12,6 +12,10 @@ public class Cell{
         this.type = type;
     }
 
+    public boolean isNeighbour(Cell cell){
+        return Math.abs(cell.x - x) < 1 && Math.abs(cell.y - y) < 1;
+    }
+
     @Override
     public boolean equals(Object o){
         if(this == o) return true;
@@ -48,4 +52,22 @@ enum CellType{
     CellType(char character){
         this.character = character;
     }
+
+    static CellType getTypeFromChar(char c){
+        switch(c){
+            case '.':
+                return WATER;
+            case '#':
+                return SHIP;
+            case '?':
+                return UNKNOWN;
+            case '~':
+                return MISS;
+            case '@':
+                return HIT;
+            default:
+                return null;
+        }
+    }
+
 }
