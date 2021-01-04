@@ -13,7 +13,7 @@ public class Cell{
     }
 
     public boolean isNeighbour(Cell cell){
-        return Math.abs(cell.x - x) < 1 && Math.abs(cell.y - y) < 1;
+        return Math.abs(cell.x - x) <= 1 && Math.abs(cell.y - y) <= 1;
     }
 
     @Override
@@ -26,7 +26,7 @@ public class Cell{
 
     @Override
     public String toString(){
-        return String.valueOf(type.character);
+        return type.toString();
     }
 
     public CellType getType(){
@@ -35,6 +35,10 @@ public class Cell{
 
     public void setType(CellType type){
         this.type = type;
+    }
+
+    public String getCords(){
+        return x + String.valueOf(y);
     }
 
 
@@ -51,6 +55,10 @@ enum CellType{
 
     CellType(char character){
         this.character = character;
+    }
+
+    public char getCharacter(){
+        return character;
     }
 
     static CellType getTypeFromChar(char c){
@@ -70,4 +78,8 @@ enum CellType{
         }
     }
 
+    @Override
+    public String toString(){
+        return String.valueOf(character);
+    }
 }

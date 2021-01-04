@@ -30,8 +30,7 @@ public class Ship{
         return neighbours;
     }
 
-    public BattleshipCommand getCommand(Cell cell){
-        cell.setType(CellType.HIT);
+    public BattleshipCommand getCommand(){
         return isFlooded() ? BattleshipCommand.FLOODED : BattleshipCommand.HIT;
     }
 

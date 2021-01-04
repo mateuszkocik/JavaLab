@@ -5,6 +5,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static game.CellType.*;
+
 public class Map{
 
     protected final int SIZE = 10;
@@ -14,18 +16,21 @@ public class Map{
         this.map = new Cell[SIZE][SIZE];
         for(int i = 0; i < SIZE; i++){
             for(int j = 0; j < SIZE; j++){
-                map[i][j] = new Cell((char) ('A' + i), j, CellType.UNKNOWN);
+                map[i][j] = new Cell((char) ('A' + i), j, UNKNOWN);
             }
         }
     }
 
     public Map(File file){
+        this.map = new Cell[SIZE][SIZE];
         try{
             FileReader fr = new FileReader(file);
             for(int i = 0; i < SIZE; i++){
                 for(int j = 0; j < SIZE; j++){
                     char cellTypeChar = (char) fr.read();
-                    map[i][j] = new Cell((char) ('A' + i), j, CellType.getTypeFromChar(cellTypeChar));
+                    while(!(cellTypeChar == SHIP.getCharacter() || cellTypeChar == WATER.getCharacter()))
+                        cellTypeChar = (char) fr.read();
+                    map[i][j] = new Cell((char) ('A' + i), j + 1, getTypeFromChar(cellTypeChar));
                 }
             }
         }catch(IOException e){
@@ -36,11 +41,7 @@ public class Map{
     }
 
     public Cell getCell(char x, int y){
-        return map['A' - x][y];
-    }
-
-    public void setCell(char x, int y, CellType type){
-        map['A' - x][y].setType(type);
+        return map[x - 'A'][y - 1];
     }
 
     public void print(){
@@ -55,8 +56,7 @@ public class Map{
     public List<Cell> getShipCells(){
         return Arrays.stream(map)
                 .flatMap(Arrays::stream)
-                .filter(c -> c.getType() == CellType.SHIP)
+                .filter(c -> c.getType() == SHIP)
                 .collect(Collectors.toList());
     }
-
 }

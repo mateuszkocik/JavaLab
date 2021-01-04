@@ -50,17 +50,15 @@ public class Game{
 
     public BattleshipCommand shootTheCell(char x, int y){
         Cell cell = myMap.getCell(x, y);
+        BattleshipCommand command = BattleshipCommand.MISS;
+        cell.setType(MISS);
         if(isShip(cell)){
             cell.setType(HIT);
-            if(everyShipFlooded()) return BattleshipCommand.LAST_FLOODED;
             Ship ship = getShipByCell(cell);
-            if(ship.isFlooded()) return BattleshipCommand.FLOODED;
-            return BattleshipCommand.HIT;
-        }else{
-            cell.setType(MISS);
-            return BattleshipCommand.MISS;
+            command = ship.getCommand();
+            if(everyShipFlooded()) command = BattleshipCommand.LAST_FLOODED;
         }
-
+        return command;
     }
 
     private boolean everyShipFlooded(){
