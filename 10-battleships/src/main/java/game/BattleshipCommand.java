@@ -7,6 +7,9 @@ public enum BattleshipCommand{
     FLOODED("trafiony zatopiony"),
     LAST_FLOODED("ostatni zatopiony");
 
+    String command;
+
     BattleshipCommand(String command){
+        this.command = command;
     }
 }

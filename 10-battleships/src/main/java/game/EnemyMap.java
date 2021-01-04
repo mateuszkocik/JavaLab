@@ -23,7 +23,12 @@ public class EnemyMap extends Map{
         return cell;
     }
 
-    public void removeFromAvailable(List<Cell> cells){
-        availableCells.removeAll(cells);
+    public void makeNeighboursWater(List<Cell> neighbours){
+        availableCells.removeAll(neighbours);
+        neighbours.forEach(c -> c.setType(CellType.WATER));
+    }
+
+    public List<Cell> getAvailableCells(){
+        return availableCells;
     }
 }

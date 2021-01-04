@@ -22,10 +22,12 @@ public class Ship{
     }
 
     public List<Cell> getNeighbours(List<Cell> availableCells){
-        return availableCells.stream()
+        var neighbours = availableCells.stream()
                 .filter(this::isNeighbour)
                 .distinct()
                 .collect(Collectors.toList());
+        neighbours.removeAll(cells);
+        return neighbours;
     }
 
     public BattleshipCommand getCommand(Cell cell){
@@ -33,8 +35,12 @@ public class Ship{
         return isFlooded() ? BattleshipCommand.FLOODED : BattleshipCommand.HIT;
     }
 
-    private boolean isFlooded(){
+    public boolean isFlooded(){
         for(Cell c : cells) if(c.getType() != CellType.HIT) return false;
         return true;
+    }
+
+    public boolean isInShip(Cell cell){
+        return cells.contains(cell);
     }
 }

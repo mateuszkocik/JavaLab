@@ -1,6 +1,9 @@
 package game;
 
 import java.io.*;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class Map{
 
@@ -47,6 +50,13 @@ public class Map{
             }
             System.out.println();
         }
+    }
+
+    public List<Cell> getShipCells(){
+        return Arrays.stream(map)
+                .flatMap(Arrays::stream)
+                .filter(c -> c.getType() == CellType.SHIP)
+                .collect(Collectors.toList());
     }
 
 }
