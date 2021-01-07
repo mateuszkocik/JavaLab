@@ -12,4 +12,26 @@ public enum BattleshipCommand{
     BattleshipCommand(String command){
         this.command = command;
     }
+
+    public String getCommandText(){
+        return command;
+    }
+
+    public static BattleshipCommand getBattleshipCommand(String command){
+        switch(command){
+            case "start":
+                return START;
+            case "pudło":
+                return MISS;
+            case "trafiony":
+                return HIT;
+            case "trafiony zatopiony":
+                return FLOODED;
+            case "ostatni zatopiony":
+                return LAST_FLOODED;
+            default:
+                return null;
+        }
+    }
+
 }

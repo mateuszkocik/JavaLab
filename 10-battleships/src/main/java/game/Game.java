@@ -9,10 +9,11 @@ import static game.CellType.*;
 public class Game{
 
     private List<Ship> myShips;
-    private Map myMap;
-    private List<Ship> enemyShips;
-    private EnemyMap enemyMap;
+    private final Map myMap;
+    private final List<Ship> enemyShips;
+    private final EnemyMap enemyMap;
     private Cell previousCell;
+    boolean active;
 
 
     public Game(File mapFile){
@@ -20,22 +21,28 @@ public class Game{
         this.enemyShips = new ArrayList<>();
         this.enemyMap = new EnemyMap();
         this.previousCell = null;
+        this.active = true;
         getShipsFromMyMap();
     }
 
-    public Cell processBattleshipCommand(BattleshipCommand command){
-        switch(command){
-            case MISS -> previousCell.setType(WATER);
-            case HIT -> hitShip();
-            case FLOODED -> floodShip();
-            case LAST_FLOODED -> {
-                floodShip();
-                System.out.println("Wygrana");
-                showResults();
-            }
-        }
+    public Cell getNextCell(){
         previousCell = enemyMap.getRandomCell();
         return previousCell;
+    }
+
+    public void processBattleshipCommand(BattleshipCommand command){
+        switch(command){
+            case MISS:
+                previousCell.setType(WATER);
+                break;
+            case HIT:
+                hitShip();
+                break;
+            case FLOODED:
+            case LAST_FLOODED:
+                floodShip();
+                break;
+        }
     }
 
     private void floodShip(){
@@ -108,9 +115,14 @@ public class Game{
         return null;
     }
 
-    private void showResults(){
+    public boolean isActive(){
+        return active;
+    }
+
+    public void showResults(){
         enemyMap.print();
         System.out.println();
         myMap.print();
+        active = false;
     }
 }
