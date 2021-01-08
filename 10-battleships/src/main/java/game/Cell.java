@@ -38,7 +38,7 @@ public class Cell{
     }
 
     public String getCords(){
-        return x + String.valueOf(y);
+        return x + String.valueOf(y+1);
     }
 
 

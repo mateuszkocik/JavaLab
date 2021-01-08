@@ -6,7 +6,7 @@ import java.util.stream.Collectors;
 
 public class Ship{
 
-    private List<Cell> cells;
+    public List<Cell> cells;
 
     public Ship(){
         this.cells = new ArrayList<>();

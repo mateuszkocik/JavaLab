@@ -24,7 +24,7 @@ public abstract class Player{
     public abstract void startGame();
 
     protected void playGame(){
-        while(game.isActive()){
+        while(true){
             try{
                 send(receive(), game.getNextCell());
             }catch(IOException e){
@@ -42,6 +42,8 @@ public abstract class Player{
         }
         out.write(messageBuilder.toString());
         System.out.println(messageBuilder.toString());
+        out.newLine();
+        out.flush();
         endGameWhenLastFlooded(command,false);
     }
 
@@ -51,10 +53,10 @@ public abstract class Player{
         System.out.println(message);
         String[] messageParts = message.split(";");
         receivedCommand = getBattleshipCommand(messageParts[0]);
-        endGameWhenLastFlooded(receivedCommand,true);
         game.processBattleshipCommand(receivedCommand);
+        endGameWhenLastFlooded(receivedCommand,true);
         char x = messageParts[1].charAt(0);
-        int y = Integer.parseInt(messageParts[2].substring(1));
+        int y = Integer.parseInt(messageParts[1].substring(1));
         return game.shootTheCell(x,y);
     }
 
@@ -63,13 +65,14 @@ public abstract class Player{
             String message = win ? "Wygrana" : "Przegrana";
             System.out.println(message);
             game.showResults();
+            System.exit(0);
         }
     }
 
     public void setInputOutput(Socket socket){
         try{
-            this.in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             this.out = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
+            this.in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         }catch(IOException e){
             e.printStackTrace();
         }
@@ -78,7 +81,7 @@ public abstract class Player{
     public static InetAddress getAddress(){
         try{
             NetworkInterface en0;
-            en0 = NetworkInterface.getByName("lo");
+            en0 = NetworkInterface.getByName("en0");
             return en0.inetAddresses()
                     .filter(a -> a instanceof Inet4Address)
                     .findFirst()

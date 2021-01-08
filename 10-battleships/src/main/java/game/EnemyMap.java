@@ -6,7 +6,7 @@ import java.util.stream.Collectors;
 
 public class EnemyMap extends Map{
 
-    private List<Cell> availableCells;
+    private final List<Cell> availableCells;
 
     public EnemyMap(){
         super();
@@ -27,6 +27,11 @@ public class EnemyMap extends Map{
         availableCells.removeAll(neighbours);
         neighbours.forEach(c -> c.setType(CellType.WATER));
     }
+
+    public void makeAvailableWater(){
+        availableCells.forEach(c -> c.setType(CellType.WATER));
+    }
+
 
     public List<Cell> getAvailableCells(){
         return availableCells;

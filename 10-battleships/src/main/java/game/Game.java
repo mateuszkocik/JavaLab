@@ -13,7 +13,6 @@ public class Game{
     private final List<Ship> enemyShips;
     private final EnemyMap enemyMap;
     private Cell previousCell;
-    boolean active;
 
 
     public Game(File mapFile){
@@ -21,7 +20,6 @@ public class Game{
         this.enemyShips = new ArrayList<>();
         this.enemyMap = new EnemyMap();
         this.previousCell = null;
-        this.active = true;
         getShipsFromMyMap();
     }
 
@@ -39,8 +37,11 @@ public class Game{
                 hitShip();
                 break;
             case FLOODED:
+                floodShip();
+                break;
             case LAST_FLOODED:
                 floodShip();
+                enemyMap.makeAvailableWater();
                 break;
         }
     }
@@ -57,9 +58,10 @@ public class Game{
 
     public BattleshipCommand shootTheCell(char x, int y){
         Cell cell = myMap.getCell(x, y);
+        boolean cellIsShip = isShip(cell);
         BattleshipCommand command = BattleshipCommand.MISS;
         cell.setType(MISS);
-        if(isShip(cell)){
+        if(cellIsShip){
             cell.setType(HIT);
             Ship ship = getShipByCell(cell);
             command = ship.getCommand();
@@ -115,14 +117,16 @@ public class Game{
         return null;
     }
 
-    public boolean isActive(){
-        return active;
-    }
-
     public void showResults(){
         enemyMap.print();
         System.out.println();
         myMap.print();
-        active = false;
+    }
+
+    public void showMaps(){
+        System.out.println("MOJA MAPA: ");
+        myMap.print();
+        System.out.println("MAPA WROGA: ");
+        enemyMap.print();
     }
 }
