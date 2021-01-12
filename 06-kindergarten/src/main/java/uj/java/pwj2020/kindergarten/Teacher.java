@@ -1,22 +1,24 @@
 package uj.java.pwj2020.kindergarten;
 
-import java.util.PriorityQueue;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Teacher{
 
-    private PriorityQueue<HungryChild> starvingChildren;
+    private List<HungryChild> starvingChildren;
     private HungryChild[] children;
     private final int AMOUNT;
 
     public Teacher(int amount){
-        starvingChildren = new PriorityQueue<>(amount);
+        starvingChildren = new ArrayList<>(amount);
         this.AMOUNT = amount;
     }
 
     public boolean canIEat(int id){
         HungryChild child = children[id];
-        if(platesAreFree(child) && neighborsAreLessHungry(child)) {
-            if(starvingChildren.contains(child)) starvingChildren.remove(child);
+        if(platesAreFree(child) && neighborsAreLessHungry(child)){
+            if(starvingChildren.contains(child))
+                starvingChildren.remove(child);
             return true;
         }
         return false;
@@ -27,24 +29,14 @@ public class Teacher{
         HungryChild rightChild = getRightChild(child);
         if(!starvingChildren.contains(leftChild) && !starvingChildren.contains(rightChild)) //Neighbours not starving
             return true;
-        int leftIndex = getStarvingIndex(leftChild);
-        int rightIndex = getStarvingIndex(rightChild);
+        int leftIndex = starvingChildren.indexOf(leftChild);
+        int rightIndex = starvingChildren.indexOf(rightChild);
 
         return child.getId() < leftIndex && child.getId() < rightIndex; //Any neighbour was starving before
     }
 
-    private int getStarvingIndex(HungryChild child){
-        if(starvingChildren.contains(child)){
-            int index = 0;
-            var iterator = starvingChildren.iterator();
-            while(iterator.next() != child) index++;
-            return index;
-        }
-        return Integer.MAX_VALUE;
-    }
-
     private HungryChild getLeftChild(HungryChild child){
-        return children[(child.getId() - 1) % AMOUNT];
+        return children[(child.getId() - 1 + AMOUNT) % AMOUNT];
     }
 
     private HungryChild getRightChild(HungryChild child){

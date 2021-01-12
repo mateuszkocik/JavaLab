@@ -13,7 +13,6 @@ public class Kindergarten{
         System.out.println("File name: " + fileName);
 
         var children = getChildrenFromFile(fileName);
-        setForks(children);
         startDinner(children);
     }
 
@@ -24,24 +23,17 @@ public class Kindergarten{
         }
     }
 
-    private static void setForks(HungryChild[] children){
-        int childrenAmount = children.length;
-        for(int i = 0; i < childrenAmount; i++){
-            children[i].rightFork = new Fork();
-            children[i].leftFork = i != 0 ? children[i - 1].rightFork : null;
-        }
-        children[0].leftFork = children[childrenAmount - 1].rightFork;
-    }
-
     public static HungryChild[] getChildrenFromFile(String fileName){
         HungryChild[] childrenArray = null;
         try{
             Scanner s = new Scanner(new File(fileName));
             int childrenAmount = s.nextInt();
             childrenArray = new HungryChild[childrenAmount];
+            Teacher teacher = new Teacher(childrenAmount);
             for(int i = 0; i < childrenAmount; i++){
-                childrenArray[i] = new HungryChild(s.next(), s.nextInt());
+                childrenArray[i] = new HungryChild(s.next(), s.nextInt(), i, teacher);
             }
+            teacher.setChildren(childrenArray);
         }catch(IOException e){
             e.printStackTrace();
         }
